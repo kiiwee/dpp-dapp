@@ -30,8 +30,8 @@
                         </NuxtLink>
                     </li>
                     <li>
-                        <NuxtLink to="/recycle">
-                            Authenticate
+                        <NuxtLink to="/buy">
+                            Buy
                         </NuxtLink>
                     </li>
                     <li><a>About</a></li>

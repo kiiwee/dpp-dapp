@@ -9,7 +9,7 @@
 
             <div v-if="validationFailure" class="validation-failure">This is NOT a valid DPP!</div>
 
-            <div v-if="validationPending" class="validation-pending">Long validation in progress...</div>
+            <div v-if="validationPending" class="validation-pending">Checking Wallet for DPP...</div>
         </qrcode-stream>
     </div>
 </template>
@@ -18,6 +18,7 @@
 import { QrcodeStream } from 'vue-qrcode-reader'
 
 export default {
+    props: ['header'],
     components: { QrcodeStream },
 
     data() {
@@ -55,7 +56,7 @@ export default {
 
             // pretend it's taking really long
             await this.timeout(3000)
-            this.isValid = this.result.startsWith('http')
+            this.isValid = this.result.startsWith('ethereum:0x')
 
             // some more delay, so users have time to read the message
             await this.timeout(2000)

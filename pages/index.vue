@@ -1,6 +1,10 @@
 <script setup lang="ts">
 const route = useRoute()
-
+import { storeToRefs } from 'pinia'
+import { useCryptoStore } from '../stores/index'
+const cryptoStore = useCryptoStore()
+const { connectWallet, mintAsset, getNFTs, mint_with_uri } = useCryptoStore()
+connectWallet()
 </script>
 
 <template>

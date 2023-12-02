@@ -12,6 +12,8 @@
   "devDependencies": {
     "@nuxt/devtools": "latest",
     "@nuxt/ui": "latest",
+    "@pinia/nuxt": "latest",
+    "@vite-pwa/nuxt": "latest",
     "daisyui": "latest",
     "nuxt": "^3.8.1",
     "vue": "^3.3.8",
@@ -19,6 +21,10 @@
   },
   "dependencies": {
     "@popperjs/core": "^2.11.8",
+    "axios": "^1.6.2",
+    "ethers": "^6.9.0",
+    "geist": "^1.2.0",
+    "nft.storage": "^7.1.1",
     "qr-scanner-wechat": "^0.1.3",
     "v-calendar": "next",
     "vue-qrcode-reader": "^5.4.1",
