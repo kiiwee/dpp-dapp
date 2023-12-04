@@ -13,7 +13,6 @@
     "@nuxt/devtools": "latest",
     "@nuxt/ui": "latest",
     "@pinia/nuxt": "latest",
-    "@vite-pwa/nuxt": "latest",
     "daisyui": "latest",
     "nuxt": "^3.8.1",
     "vue": "^3.3.8",

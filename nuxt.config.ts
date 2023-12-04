@@ -7,6 +7,9 @@ export default defineNuxtConfig({
       enabled: true,
     },
   },
-  modules: ["@nuxt/ui", "@pinia/nuxt", "@vite-pwa/nuxt"],
+
+  modules: ["@nuxt/ui", "@pinia/nuxt", 
+  // "@vite-pwa/nuxt"
+],
 
 })
