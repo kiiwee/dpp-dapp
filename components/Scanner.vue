@@ -1,15 +1,19 @@
 <template>
     <div>
-        <p class="decode-result">
+        <!-- <p class="decode-result">
             Last result: <b>{{ result }}</b>
-        </p>
+        </p> -->
 
         <qrcode-stream :paused="paused" @detect="onDetect" @error="onError" @camera-on="resetValidationState">
             <div v-if="validationSuccess" class="validation-success">This is wallet does have a valid DPP</div>
 
-            <div v-if="validationFailure" class="validation-failure">This is NOT a valid DPP!</div>
+            <div v-if="validationFailure" class="validation-failure">This is NOT a ethereum address</div>
 
             <div v-if="validationPending" class="validation-pending">Checking Wallet for DPP...</div>
+            <div v-if="noETH" class="validation-failure">Isnt Eth Address</div>
+            <div v-if="routeETH" class="validation-success">Redirecting...</div>
+
+
         </qrcode-stream>
     </div>
 </template>
@@ -18,11 +22,13 @@
 import { QrcodeStream } from 'vue-qrcode-reader'
 
 export default {
-    props: ['header'],
+    props: ['header', 'checkdpp', 'moveToDest'],
     components: { QrcodeStream },
 
     data() {
         return {
+            routeandEth: undefined,
+            isntETH: undefined,
             isValid: undefined,
             paused: false,
             result: null
@@ -30,6 +36,12 @@ export default {
     },
 
     computed: {
+        routeETH() {
+            return this.routeandEth === true
+        },
+        noETH() {
+            return this.isntETH === true
+        },
         validationPending() {
             return this.isValid === undefined && this.paused
         },
@@ -52,15 +64,37 @@ export default {
 
         async onDetect([firstDetectedCode]) {
             this.result = firstDetectedCode.rawValue
-            this.paused = true
+            this.$emit('result-scan', this.result)
+            if (!this.result.startsWith('ethereum:0x')) {
+                this.paused = true
+                this.isntETH = true
+                await this.timeout(3000)
+                this.isntETH = undefined
+                this.paused = false
 
-            // pretend it's taking really long
-            await this.timeout(3000)
-            this.isValid = this.result.startsWith('ethereum:0x')
+                return;
+            }
+            if (this.moveToDest) {
+                this.paused = true
 
-            // some more delay, so users have time to read the message
-            await this.timeout(2000)
-            this.paused = false
+                // TODO: #1 Check for Purchase
+
+                this.hasPurchase = true
+                await this.timeout(200)
+                await navigateTo("/buy/distributer/" + this.result)
+                return;
+            }
+            else if (this.checkdpp) {
+                this.paused = true
+                // TODO: #2 Check for DPP
+                // pretend it's taking really long
+                await this.timeout(3000)
+                this.isValid = this.result.startsWith('ethereum:0x')
+
+                // some more delay, so users have time to read the message
+                await this.timeout(2000)
+                this.paused = false
+            }
         },
 
         timeout(ms) {
