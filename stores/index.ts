@@ -9,7 +9,7 @@ import fs from "fs";
 
 // The 'path' module provides helpers for manipulating filesystem paths
 import path from "path";
-// import contractABI from '../../MacDee.sol/MacDeeContract.json'
+import contractABI from '../../DPP.sol/DPPContract.json'
 // const contractAddress = '0x35708b2605A08A471a80059a8D89d3E1B098FB06'
 // import alchemy from '../plugins/alchemy'
 const NFT_STORAGE_TOKEN =
