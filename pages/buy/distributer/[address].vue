@@ -37,7 +37,7 @@
                     </div>
                 </div>
                 <div class="mt-5">
-                    <button @click="acceptPurchase()" class="btn mr-5 text-xl btn-success "> Accept</button>
+                    <button @click="checkforPurchase()" class="btn mr-5 text-xl btn-success "> Accept</button>
                     <button @click="declinePurchase()" disabled="disabled" class="btn ml-5 text-xl btn-error ">
                         Decline</button>
 
@@ -56,6 +56,12 @@
 <script setup lang="ts">
 const route = useRoute()
 // TODO: #3 Accept and decline Purchase
+import { storeToRefs } from 'pinia'
+import { useCryptoStore } from '../stores/index'
+const cryptoStore = useCryptoStore()
+const { checkforPurchase, connectWallet } = useCryptoStore()
+connectWallet()
+
 function acceptPurchase() {
 
 }

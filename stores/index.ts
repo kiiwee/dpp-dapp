@@ -2,14 +2,14 @@
 import { acceptHMRUpdate, defineStore } from "pinia";
 // Setup: npm install alchemy-sdk
 import { ethers } from "ethers";
-const contractAddress = "0xffde398a3dc75b951b750e3db6dbd2a99aa2503b";
+const contractAddress = "0x80c34Df98b49c44a2A69c5B059e105A2277360f2";
 import { NFTStorage, File, Blob } from "nft.storage";
 // The 'fs' builtin module on Node.js provides access to the file system
 import fs from "fs";
 
 // The 'path' module provides helpers for manipulating filesystem paths
 import path from "path";
-import contractABI from '../../DPP.sol/DPPContract.json'
+import contractABI from '../contract/DPP.sol/DPPContract.json'
 // const contractAddress = '0x35708b2605A08A471a80059a8D89d3E1B098FB06'
 // import alchemy from '../plugins/alchemy'
 const NFT_STORAGE_TOKEN =
@@ -60,7 +60,75 @@ export const useCryptoStore = defineStore("user", () => {
             console.log(error);
         }
     }
+       async function checkforPurchase() {
+         console.log("setting loader");
+         console.log(Array.isArray(contractABI.abi), contractABI.abi)
+        //setLoader(true)
+        try {
+            const { ethereum } = window;
+            if (ethereum) {
+                const provider = new ethers.providers.Web3Provider(ethereum);
+                const signer = provider.getSigner();
+                const TokenContract = new ethers.Contract(
+                    contractAddress,
+                    contractABI.abi,
+                    signer
+                );
+                    
+                /*
+                 * Execute the actual wave from your smart contract
+                 */
+                // const overrides = {
+                //     tokenid: tokenid,
+                //     amount: 1000,
+                //     gasLimit: 200000, // optional
+                // };
 
+                // const metadata = await client.store({
+                //     name: "DPP TEst",
+                //     description: "This is a Test DPP",
+                //     image: new File(["<DATA>"], "../public/pinpie.png", {
+                //         type: "image/jpg",
+                //     }),
+                //     properties: {
+                //         supplier1: "Custom data can appear here, files are auto uploaded.",
+                //         supplier2: "Custom data can appear here, files are auto uploaded.",
+                //     },
+                // });
+                // console.log(metadata.url);
+                const Txn = await TokenContract.orderMade("0x9e2BB71110d724d8712B94C5Ba4C07F2E7bcD3dA"
+                   
+                );
+                console.log(
+                    Txn,
+                    "Link to txn",
+                    "https://sepolia.etherscan.io/tx/" + Txn.hash
+                );
+                console.log("Mining...", Txn.hash);
+                await Txn.wait();
+                console.log("Mined -- ", Txn.hash);
+                /*
+                 * Execute the actual wave from your smart contract
+                 */
+                // const overrides = {
+                //     tokenid: token_id,
+                //     amount: amount_u,
+                //     gasLimit: 200000, // optional
+                // }
+                // const Txn = await TokenContract.normal_mint(token_id, amount_u, { gasLimit: 5000000 });
+                // console.log("Link to txn", "https://sepolia.etherscan.io/tx/" + Txn.hash)
+                // console.log('Mining...', Txn.hash)
+                // await Txn.wait()
+                // console.log('Mined -- ', Txn.hash)
+            } else {
+                console.log("Ethereum object doesn't exist!");
+            }
+        } catch (error) {
+            //setLoader(false)
+            console.log("Eroor");
+            console.log(error);
+        }
+    }
     async function getNFTs() {
         try {
             loading.value = true;
@@ -360,6 +428,7 @@ export const useCryptoStore = defineStore("user", () => {
         mint_with_uri,
         getNFTsByContract,
         mintAsset,
+        checkforPurchase,
         account,
         nfts,
         loading,
