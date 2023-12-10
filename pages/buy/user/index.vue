@@ -29,7 +29,7 @@
         <h2> Deposit Wheel Back : 100</h2>
         <h1>Deposit Total: 400</h1>
         <h2 class="p-5"> Total: 1200$</h2>
-        <button class="btn" @click="printall">
+        <button class="btn" @click="makePurchase()">
             Purchase
         </button>
     </div>
@@ -42,6 +42,9 @@ const selected_model = ref({});
 function printall() {
     console.log(selected_model.value)
 }
+const cryptoStore = useCryptoStore()
+const { makePurchase, connectWallet } = useCryptoStore()
+
 useSeoMeta({
     title: '[title]',
     description: '[description]',
@@ -54,7 +57,6 @@ useSeoMeta({
     twitterImage: '[twitter:image]',
     twitterCard: 'summary'
 })
-
 useHead({
     htmlAttrs: {
         lang: 'en'

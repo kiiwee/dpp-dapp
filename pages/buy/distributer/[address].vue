@@ -38,7 +38,7 @@
                 </div>
                 <div class="mt-5">
                     <button @click="checkforPurchase()" class="btn mr-5 text-xl btn-success "> Accept</button>
-                    <button @click="declinePurchase()" disabled="disabled" class="btn ml-5 text-xl btn-error ">
+                    <button @click="declinePurchase()" class="btn ml-5 text-xl btn-error ">
                         Decline</button>
 
                 </div>
@@ -50,7 +50,6 @@
             </div>
             <!-- <figure><img src="/dummy.avif" alt="Shoes" /></figure> -->
         </div>
-
     </div>
 </template>
 <script setup lang="ts">
