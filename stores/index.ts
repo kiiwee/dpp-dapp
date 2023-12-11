@@ -60,12 +60,33 @@ export const useCryptoStore = defineStore("user", () => {
             console.log(error);
         }
     }
-    async function makePurchase() {
+    async function makePurchase(purchaseDetails: {}) {
         console.log("setting loader");
         //setLoader(true)
         try {
             const { ethereum } = window;
             if (ethereum) {
+                const client = new NFTStorage({ token: NFT_STORAGE_TOKEN });
+                //TODO: #4 Fix get wallet address before trigger
+                const description = "Order Created by" + purchaseDetails.accountAddress
+                const metadata = await client.store({
+                    "name": "Bike Order",
+                    "description": description,
+                    "image": new File(["<DATA>"], "../public/favicon.ico", {
+                        type: "image/ico",
+                    }),
+                    "quantity": 1,
+                    "bikeCost": purchaseDetails.bikeCost,
+                    "depositFrame": purchaseDetails.depositFrame,
+                    "depositFrontWheel": purchaseDetails.depositFrontWheel,
+                    "depositBackWheel": purchaseDetails.depositBackWheel,
+                    "depositTotal": purchaseDetails.depositTotal,
+                    "totalCost": purchaseDetails.totalCost,
+                    "colour": purchaseDetails.colour,
+                    "model": purchaseDetails.model
+                });
+                console.log("NFT data stored!");
+                console.log("Metadata URI: ", metadata.url);
                 const provider = new ethers.providers.Web3Provider(ethereum);
                 const signer = provider.getSigner();
                 const TokenContract = new ethers.Contract(
@@ -73,10 +94,8 @@ export const useCryptoStore = defineStore("user", () => {
                     contractABI.abi,
                     signer
                 );
-                // await console.log(ipfsJson)
-                const ethValue = ethers.utils.formatEther(1800);
-
-                const Txn = await TokenContract.makePurchase("Hellooooo ", { value: ethValue }
+                const options = { value: ethers.utils.formatUnits("1800", "wei") }
+                const Txn = await TokenContract.makePurchase(metadata.url, options
                 );
                 console.log(
                     Txn,
@@ -95,7 +114,7 @@ export const useCryptoStore = defineStore("user", () => {
             console.log(error);
         }
     }
-    async function checkforPurchase(address) {
+    async function getOrderByUser(address: String) {
         console.log("setting loader");
         //setLoader(true)
         try {
@@ -109,8 +128,33 @@ export const useCryptoStore = defineStore("user", () => {
                     signer
                 );
                 await console.log(address)
-                const Txn = await TokenContract.orderMade(address
+                const Txn = await TokenContract.userOrderIPFS(address);
+                const fetched = await useFetch(Txn.replace("ipfs://", "https://nftstorage.link/ipfs/"))
+                return fetched.data.value
+            } else {
+                console.log("Ethereum object doesn't exist!");
+            }
+        } catch (error) {
+            //setLoader(false)
+            console.log("Eroor");
+            console.log(error);
+        }
+    }
+    async function checkforPurchase(address: String) {
+        console.log("setting loader");
+        //setLoader(true)
+        try {
+            const { ethereum } = window;
+            if (ethereum) {
+                const provider = new ethers.providers.Web3Provider(ethereum);
+                const signer = provider.getSigner();
+                const TokenContract = new ethers.Contract(
+                    contractAddress,
+                    contractABI.abi,
+                    signer
                 );
+                await console.log(address)
+                const Txn = await TokenContract.orderMade(address);
                 console.log(
                     Txn,
                     "Link to txn",
@@ -429,6 +473,7 @@ export const useCryptoStore = defineStore("user", () => {
         mintAsset,
         checkforPurchase,
         makePurchase,
+        getOrderByUser,
         account,
         nfts,
         loading,

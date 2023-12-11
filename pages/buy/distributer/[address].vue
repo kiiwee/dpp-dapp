@@ -10,17 +10,39 @@
         <div class="card justify-center w-fit bg-base-100 shadow-xl ">
             <div class="card-body">
                 <h1 class="card-title py-2">Order #{Order Number}</h1>
-                <h2>POS Date Time: 00:00:00 1/1/2024 </h2>
+                <h2>POS Date Time: 00:00:00 1/1/2024 ADD TO PROCESS</h2>
                 <div>
                     <h2>Colour: </h2>
                     <div class="ml-10">
-                        <h2>{Chosen Color}</h2>
+                        <h2>{{ orderContents.colour }}</h2>
                     </div>
                 </div>
                 <div>
                     <h2>Type: </h2>
                     <div class="ml-10">
-                        <h2>{Chosen Type}</h2>
+                        <h2>{{ orderContents.model }}</h2>
+                    </div>
+                </div>
+                <div>
+                    <h2>Bike Cost: {{ orderContents.bikeCost }} wei </h2>
+
+                </div>
+                <div>
+                    <h2>Deposit Break Down: </h2>
+                    <div class="ml-10 mb-2">
+                        <h2>Frame: {{ orderContents.depositFrame }}</h2>
+                    </div>
+                    <div class="ml-10 mb-2">
+                        <h2>Front Wheel: {{ orderContents.depositFrontWheel }}</h2>
+                    </div>
+                    <div class="ml-10 mb-2">
+                        <h2>Back Wheel: {{ orderContents.depositBackWheel }}</h2>
+                    </div>
+                </div>
+                <div>
+                    <h2>Total Cost : </h2>
+                    <div class="ml-10">
+                        <h2>{{ orderContents.totalCost }}</h2>
                     </div>
                 </div>
                 <h2>Made From: </h2>
@@ -40,7 +62,6 @@
                     <button @click="checkforPurchase()" class="btn mr-5 text-xl btn-success "> Accept</button>
                     <button @click="declinePurchase()" class="btn ml-5 text-xl btn-error ">
                         Decline</button>
-
                 </div>
                 <!-- <h2>{{ itemJson.description }}</h2>
 
@@ -58,15 +79,16 @@ const route = useRoute()
 import { storeToRefs } from 'pinia'
 import { useCryptoStore } from '../stores/index'
 const cryptoStore = useCryptoStore()
-const { checkforPurchase, connectWallet } = useCryptoStore()
+const { checkforPurchase, connectWallet, getOrderByUser } = useCryptoStore()
 connectWallet()
-
 function acceptPurchase() {
 
 }
 function declinePurchase() {
 
 }
+const orderContents = await getOrderByUser(route.params.address)
+console.log(orderContents)
 // When accessing /posts/1, route.params.id will be 1
 console.log(route.params.address)
 </script>

@@ -7,7 +7,7 @@
             <div class="label">
                 <span class="label-text">Choose Your Model</span>
             </div>
-            <select class="select select-bordered" v-model="selected_model.model">
+            <select class="select select-bordered" v-model="toIPFS.model">
                 <option disabled selected>Model</option>
                 <option v-for="model of models" :key="model">{{ model }}</option>
 
@@ -17,36 +17,54 @@
             <div class="label">
                 <span class="label-text">Choose Your Colour</span>
             </div>
-            <select class="select select-bordered" v-model="selected_model.colour">
+            <select class="select select-bordered" v-model="toIPFS.colour">
                 <option disabled selected>Color</option>
                 <option v-for="colour of colours" :key="colour">{{ colour }}</option>
 
             </select>
         </label>
-        <h2 class="p-2"> Bike Cost : 800</h2>
-        <h2> Deposit Frame : 200</h2>
-        <h2> Deposit Wheel Front : 100</h2>
-        <h2> Deposit Wheel Back : 100</h2>
-        <h1>Deposit Total: 400</h1>
-        <h2 class="p-5"> Total: 1200$</h2>
-        <button class="btn" @click="makePurchase()">
+        <h2 class="p-2"> Bike Cost : {{ toIPFS.bikeCost }} wei</h2>
+        <h2> Deposit Frame : {{ toIPFS.depositFrame }} wei</h2>
+        <h2> Deposit Wheel Front : {{ toIPFS.depositFrontWheel }} wei</h2>
+        <h2> Deposit Wheel Back : {{ toIPFS.depositBackWheel }} wei</h2>
+        <h1>Deposit Total: {{ toIPFS.depositTotal }} wei</h1>
+        <h2 class="p-5"> Total: {{ toIPFS.totalCost }} wei</h2>
+        <button class="btn" @click="pushToIPFS()">
             Purchase
         </button>
     </div>
 </template>
 
 <script setup lang="ts">
+const { makePurchase, connectWallet, account } = useCryptoStore()
+
 const models = ['Retro', 'Sporty', 'City']
 const colours = ['Red', 'Green', 'Blue', 'Brown']
 const selected_model = ref({});
-function printall() {
-    console.log(selected_model.value)
+const toIPFS = {
+    bikeCost: 1000,
+    depositFrame: 400,
+    depositFrontWheel: 200,
+    depositBackWheel: 200,
+    depositTotal: 200,
+    totalCost: 1800,
+    colour: "",
+    colour: "",
+    accountAddress: account,
 }
-const cryptoStore = useCryptoStore()
-const { makePurchase, connectWallet } = useCryptoStore()
 
+function pushToIPFS() {
+    if (toIPFS.colour == "" && toIPFS.model == "") {
+        console.log("error")
+        return
+    }
+    console.log(toIPFS)
+    makePurchase(toIPFS)
+}
+
+console.log(account)
 useSeoMeta({
-    title: '[title]',
+    title: 'Bike Purchase',
     description: '[description]',
     ogTitle: '[og:title]',
     ogDescription: '[og:description]',
@@ -57,18 +75,7 @@ useSeoMeta({
     twitterImage: '[twitter:image]',
     twitterCard: 'summary'
 })
-useHead({
-    htmlAttrs: {
-        lang: 'en'
-    },
-    link: [
-        {
-            rel: 'icon',
-            type: 'image/png',
-            href: '/favicon.png'
-        }
-    ]
-})
+
 </script>
 
 <style scoped></style>
