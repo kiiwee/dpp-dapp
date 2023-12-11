@@ -2,7 +2,7 @@
 import { acceptHMRUpdate, defineStore } from "pinia";
 // Setup: npm install alchemy-sdk
 import { ethers } from "ethers";
-const contractAddress = "0x0E54bBd596652E6aFDc79573370E585662A11a48";
+const contractAddress = "0x64401922261928ca18e405c4b0c48d3f1641463e";
 import { NFTStorage, File, Blob } from "nft.storage";
 // The 'fs' builtin module on Node.js provides access to the file system
 import fs from "fs";
@@ -30,38 +30,22 @@ const baseURL = `https://eth-sepolia.g.alchemy.com/v2/1e3k-TtozfGSz3WflkBQZQVauA
 
 // For example's sake, we'll fetch an image from an HTTP URL.
 // In most cases, you'll want to use files provided by a user instead.
-async function getExampleImage() {
-    const imageOriginUrl =
-        "https://img.zolaprod.babsta.net/lti3zL6JeH7hOgHqjXQwnQiOE7M=/fit-in/1700x1700/244c47fd4bd54f37b2312bf1a5265c75";
-    const r = await useFetch(imageOriginUrl, { mode: "no-cors" });
-    if (!r.ok) {
-        throw new Error(`error fetching image: [${r.statusCode}]: ${r.status}`);
-    }
-    return r.blob();
-}
+// async function getExampleImage() {
+//     const imageOriginUrl =
+//         "https://img.zolaprod.babsta.net/lti3zL6JeH7hOgHqjXQwnQiOE7M=/fit-in/1700x1700/244c47fd4bd54f37b2312bf1a5265c75";
+//     const r = await useFetch(imageOriginUrl, { mode: "no-cors" });
+//     if (!r.ok) {
+//         throw new Error(`error fetching image: [${r.statusCode}]: ${r.status}`);
+//     }
+//     return r.blob();
+// }
 
 export const useCryptoStore = defineStore("user", () => {
     const account = ref(null);
     const loading = ref(true);
     const nfts = ref(null);
     const orderUser = ref({})
-    async function connectWallet() {
-        try {
-            const { ethereum } = window;
-            if (!ethereum) {
-                alert("Must connect to MetaMask!");
-                return;
-            }
-            const myAccounts = await ethereum.request({
-                method: "eth_requestAccounts",
-            });
 
-            console.log("Connected: ", myAccounts[0]);
-            account.value = myAccounts[0];
-        } catch (error) {
-            console.log(error);
-        }
-    }
     async function makePurchase(purchaseDetails: {
         [key: string]: any; // 👈️ variable key
     }) {
@@ -117,7 +101,7 @@ export const useCryptoStore = defineStore("user", () => {
         }
     }
 
-    async function getOrderByUser(address: `0x${string}` | undefined) {
+    async function getOrderByUser(address: `0x${string}` | any) {
         console.log("setting loader");
         //setLoader(true)
         try {
@@ -127,9 +111,14 @@ export const useCryptoStore = defineStore("user", () => {
                 functionName: 'userOrderIPFS',
                 args: [address]
             })
-            const fetched = await useFetch(data.replace("ipfs://", "https://nftstorage.link/ipfs/"))
-            orderUser.value = fetched.data.value
-            return fetched.data.value
+            if (data) {
+                const fetched = await useLazyFetch(data.replace("ipfs://", "https://nftstorage.link/ipfs/"))
+                console.log("Hello")
+                console.log(fetched)
+                orderUser.value = fetched.data.value
+                return fetched.data.value
+            }
+
         } catch (error) {
             //setLoader(false)
             console.log("Eroor");
@@ -142,7 +131,7 @@ export const useCryptoStore = defineStore("user", () => {
         //setLoader(true)
         try {
             console.log(address)
-            const data: any = await readContract({
+            const data = await readContract({
                 address: contractAddress,
                 abi: contractABI.abi,
                 functionName: 'orderMade',
@@ -150,6 +139,44 @@ export const useCryptoStore = defineStore("user", () => {
             })
             console.log(data)
             return data
+        } catch (error) {
+            //setLoader(false)
+            console.log("Eroor");
+            console.log(error);
+        }
+    }
+
+    async function cancelPurchaseUser() {
+        console.log("setting loader");
+        //setLoader(true)
+        try {
+            console.log(address)
+            const { hash } = await writeContract({
+                address: contractAddress,
+                abi: contractABI.abi,
+                functionName: 'cancelPurchase_User',
+            })
+            console.log("https://sepolia.etherscan.io/tx/" + hash)
+            return hash
+        } catch (error) {
+            //setLoader(false)
+            console.log("Eroor");
+            console.log(error);
+        }
+    }
+    async function cancelPurchaseDistributer(address: any) {
+        console.log("setting loader");
+        //setLoader(true)
+        try {
+            console.log(address)
+            const { hash } = await writeContract({
+                address: contractAddress,
+                abi: contractABI.abi,
+                functionName: 'cancelPurchase_Distributor',
+                args: [address]
+            })
+            console.log("https://sepolia.etherscan.io/tx/" + hash)
+            return hash
         } catch (error) {
             //setLoader(false)
             console.log("Eroor");
@@ -216,248 +243,14 @@ export const useCryptoStore = defineStore("user", () => {
             console.log(error);
         }
     }
-    async function mintAsset(assetInfo: {}) {
-        // const image = await getExampleImage()
-        const provider = new ethers.providers.Web3Provider(ethereum);
-        const signer = provider.getSigner();
-        const TokenContract = new ethers.Contract(
-            contractAddress,
-            contractABI.abi,
-            signer
-        );
-
-        try {
-            const { ethereum } = window;
-            if (ethereum) {
-                const ammount_to_mint: number = assetInfo.quantitiy;
-                const client = new NFTStorage({ token: NFT_STORAGE_TOKEN });
-
-                const metadata = await client.store({
-                    "name": assetInfo.name,
-                    "description": assetInfo.desc,
-                    "image": new File(["<DATA>"], "../public/pinpie.png", {
-                        type: "image/jpg",
-                    }),
-                    "quantity": assetInfo.quantitiy,
-                    "supplier_name": assetInfo.supplier_name,
-                    "country_origin": assetInfo.country_origin,
-                    "properties": {
-                        size: [{
-                            "size_l": assetInfo.size.size_w,
-
-                        },
-                        {
-                            "size_l": assetInfo.size.size_l,
-                        },
-                        { "size_h": assetInfo.size.size_h, }],
-
-                    }
-                });
-                console.log("NFT data stored!");
-                console.log("Metadata URI: ", metadata.url);
-                console.log(ammount_to_mint);
-                const Txn = await TokenContract.mint_Assets(
-                    ammount_to_mint,
-                    metadata.url,
-                    { gasLimit: 5000000 }
-                );
-                console.log(
-                    "Link to txn",
-                    "https://sepolia.etherscan.io/tx/" + Txn.hash
-                );
-                console.log("Mining...", Txn.hash);
-                await Txn.wait();
-                console.log("Mined -- ", Txn.hash);
-            } else {
-                console.log("Ethereum object doesn't exist!");
-            }
-        } catch (error) {
-            //setLoader(false)
-            console.log("Eroor");
-            console.log(error);
-        }
-    }
-
-    async function mint_with_uri(
-        tokenid: number,
-        ammout_u: number,
-        name: string
-    ) {
-        console.log("setting loader");
-        //setLoader(true)
-        try {
-            const { ethereum } = window;
-            if (ethereum) {
-                const provider = new ethers.providers.Web3Provider(ethereum);
-                const signer = provider.getSigner();
-                const TokenContract = new ethers.Contract(
-                    contractAddress,
-                    contractABI.abi,
-                    signer
-                );
-
-                /*
-                 * Execute the actual wave from your smart contract
-                 */
-                const overrides = {
-                    tokenid: tokenid,
-                    amount: ammout_u,
-                    gasLimit: 200000, // optional
-                };
-
-                const metadata = await client.store({
-                    name: name,
-                    description: "Final Product of the company",
-                    image: new File(["<DATA>"], "../public/pinpie.png", {
-                        type: "image/jpg",
-                    }),
-                    properties: {
-                        supplier1: "Custom data can appear here, files are auto uploaded.",
-                        supplier2: "Custom data can appear here, files are auto uploaded.",
-                    },
-                });
-                console.log(metadata.url);
-                const Txn = await TokenContract.uri_set_mint(
-                    tokenid,
-                    ammout_u,
-                    metadata.url,
-                    { gasLimit: 5000000 }
-                );
-                console.log(
-                    "Link to txn",
-                    "https://sepolia.etherscan.io/tx/" + Txn.hash
-                );
-                console.log("Mining...", Txn.hash);
-                await Txn.wait();
-                console.log("Mined -- ", Txn.hash);
-                /*
-                 * Execute the actual wave from your smart contract
-                 */
-                // const overrides = {
-                //     tokenid: token_id,
-                //     amount: amount_u,
-                //     gasLimit: 200000, // optional
-                // }
-                // const Txn = await TokenContract.normal_mint(token_id, amount_u, { gasLimit: 5000000 });
-                // console.log("Link to txn", "https://sepolia.etherscan.io/tx/" + Txn.hash)
-                // console.log('Mining...', Txn.hash)
-                // await Txn.wait()
-                // console.log('Mined -- ', Txn.hash)
-            } else {
-                console.log("Ethereum object doesn't exist!");
-            }
-        } catch (error) {
-            //setLoader(false)
-            console.log("Eroor");
-            console.log(error);
-        }
-    }
-    async function mint_Semi(token_ids: Array, amount_u: Array) {
-        console.log("setting loader");
-        //setLoader(true)
-        try {
-            const { ethereum } = window;
-            if (ethereum) {
-                const ammount_to_mint: number = assetInfo.quantitiy;
-                const client = new NFTStorage({ token: NFT_STORAGE_TOKEN });
-
-                const metadata = await client.store({
-                    "name": assetInfo.name,
-                    "description": assetInfo.desc,
-                    "image": new File(["<DATA>"], "../public/pinpie.png", {
-                        type: "image/jpg",
-                    }),
-                    "quantity": assetInfo.quantitiy,
-                    "supplier_name": assetInfo.supplier_name,
-                    "country_origin": assetInfo.country_origin,
-                    "properties": {
-                        size: [{
-                            "size_l": assetInfo.size.size_w,
-
-                        },
-                        {
-                            "size_l": assetInfo.size.size_l,
-                        },
-                        { "size_h": assetInfo.size.size_h, }],
-
-                    }
-                });
-                console.log("NFT data stored!");
-                console.log("Metadata URI: ", metadata.url);
-                console.log(ammount_to_mint);
-                const Txn = await TokenContract.mint_Assets(
-                    ammount_to_mint,
-                    metadata.url,
-                    { gasLimit: 5000000 }
-                );
-                console.log(
-                    "Link to txn",
-                    "https://sepolia.etherscan.io/tx/" + Txn.hash
-                );
-                console.log("Mining...", Txn.hash);
-                await Txn.wait();
-                console.log("Mined -- ", Txn.hash);
-            } else {
-                console.log("Ethereum object doesn't exist!");
-            }
-        } catch (error) {
-            //setLoader(false)
-            console.log("Eroor");
-            console.log(error);
-        }
-    }
-    async function mint_token(token_id: number, amount_u: number) {
-        console.log("setting loader");
-        //setLoader(true)
-        try {
-            const { ethereum } = window;
-            if (ethereum) {
-                // create provider object from ethers library, using ethereum object injected by metamask
-                const provider = new ethers.providers.Web3Provider(ethereum);
-                const signer = provider.getSigner();
-                const TokenContract = new ethers.Contract(
-                    contractAddress,
-                    contractABI.abi,
-                    signer
-                );
-
-                /*
-                 * Execute the actual wave from your smart contract
-                 */
-                const overrides = {
-                    tokenid: token_id,
-                    amount: amount_u,
-                    gasLimit: 200000, // optional
-                };
-                const Txn = await TokenContract.normal_mint(token_id, amount_u, {
-                    gasLimit: 5000000,
-                });
-                console.log(
-                    "Link to txn",
-                    "https://sepolia.etherscan.io/tx/" + Txn.hash
-                );
-                console.log("Mining...", Txn.hash);
-                await Txn.wait();
-                console.log("Mined -- ", Txn.hash);
-            } else {
-                console.log("Ethereum object doesn't exist!");
-            }
-        } catch (error) {
-            //setLoader(false)
-            console.log("Eroor");
-            console.log(error);
-        }
-    }
     return {
         getNFTs,
-        connectWallet,
-        mint_token,
-        mint_with_uri,
         getNFTsByContract,
-        mintAsset,
         checkforPurchase,
         makePurchase,
         getOrderByUser,
+        cancelPurchaseUser,
+        cancelPurchaseDistributer,
         account,
         nfts,
         loading,
