@@ -5,7 +5,7 @@
         </div>
         <div class=" items-center  justify-center flex-col flex  gap-3  ">
 
-            <button class="btn" disabled="disabled">Disabled using attribute
+            <button class="btn" disabled='true'>Disabled using attribute
 
             </button>
 
@@ -15,14 +15,31 @@
             <NuxtLink class=" btn btn-primary btn-lg" to="/buy/user">
                 User Page
             </NuxtLink>
+            <button class="btn  btn-accent btn-lg" @click="toUserOrderPage">Check Your Order
+
+            </button>
 
 
         </div>
+
+
     </div>
 </template>
 
 <script setup lang="ts">
-const colorMode = useColorMode();
+
+const { getOrderByUser } = useCryptoStore()
+import { getAccount } from '@wagmi/core'
+const { orderUser } = storeToRefs(useCryptoStore())
+
+console.log(getAccount())
+const account = getAccount()
+async function toUserOrderPage() {
+    await navigateTo("/buy/user/" + account.address)
+}
+
+getOrderByUser(account.address)
+
 
 </script>
 
