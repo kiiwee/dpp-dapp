@@ -86,7 +86,6 @@ const orderContents = await getOrderByUser(route.params.address)
 
 // TODO: #3 Accept and decline Purchase
 import { storeToRefs } from 'pinia'
-import { useCryptoStore } from '../stores/index'
 const cryptoStore = useCryptoStore()
 connectWallet()
 function acceptPurchase() {
