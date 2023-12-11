@@ -7,4 +7,5 @@
   <NuxtPage />
 </template>
 <script>
+
 </script>

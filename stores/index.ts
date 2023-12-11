@@ -17,6 +17,8 @@ const NFT_STORAGE_TOKEN =
 const client = new NFTStorage({ token: NFT_STORAGE_TOKEN });
 import axios from "axios";
 const address = "0x9e2BB71110d724d8712B94C5Ba4C07F2E7bcD3dA";
+import { readContract, getAccount, writeContract } from '@wagmi/core'
+import { parseEther, parseGwei, type Address } from "viem";
 
 
 const baseURL = `https://eth-sepolia.g.alchemy.com/v2/1e3k-TtozfGSz3WflkBQZQVauAp1WYFv`;
@@ -42,7 +44,7 @@ export const useCryptoStore = defineStore("user", () => {
     const account = ref(null);
     const loading = ref(true);
     const nfts = ref(null);
-
+    const orderUser = ref({})
     async function connectWallet() {
         try {
             const { ethereum } = window;
@@ -60,15 +62,18 @@ export const useCryptoStore = defineStore("user", () => {
             console.log(error);
         }
     }
-    async function makePurchase(purchaseDetails: {}) {
+    async function makePurchase(purchaseDetails: {
+        [key: string]: any; // 👈️ variable key
+    }) {
         console.log("setting loader");
         //setLoader(true)
         try {
-            const { ethereum } = window;
-            if (ethereum) {
+            const account = getAccount()
+
+            if (account) {
                 const client = new NFTStorage({ token: NFT_STORAGE_TOKEN });
                 //TODO: #4 Fix get wallet address before trigger
-                const description = "Order Created by" + purchaseDetails.accountAddress
+                const description = "Order Created by" + account.address
                 const metadata = await client.store({
                     "name": "Bike Order",
                     "description": description,
@@ -85,26 +90,23 @@ export const useCryptoStore = defineStore("user", () => {
                     "colour": purchaseDetails.colour,
                     "model": purchaseDetails.model
                 });
+
                 console.log("NFT data stored!");
                 console.log("Metadata URI: ", metadata.url);
-                const provider = new ethers.providers.Web3Provider(ethereum);
-                const signer = provider.getSigner();
-                const TokenContract = new ethers.Contract(
-                    contractAddress,
-                    contractABI.abi,
-                    signer
-                );
-                const options = { value: ethers.utils.formatUnits("1800", "wei") }
-                const Txn = await TokenContract.makePurchase(metadata.url, options
-                );
+                const { hash } = await writeContract({
+                    address: contractAddress,
+                    abi: contractABI.abi,
+                    functionName: 'makePurchase',
+                    args: [metadata.url],
+                    value: parseEther('0.0000000000000018'),
+                })
+
                 console.log(
-                    Txn,
+                    hash,
                     "Link to txn",
-                    "https://sepolia.etherscan.io/tx/" + Txn.hash
+                    "https://sepolia.etherscan.io/tx/" + hash
                 );
-                console.log("Mining...", Txn.hash);
-                await Txn.wait();
-                console.log("Mined -- ", Txn.hash);
+                console.log("Mining...", hash);
             } else {
                 console.log("Ethereum object doesn't exist!");
             }
@@ -114,58 +116,40 @@ export const useCryptoStore = defineStore("user", () => {
             console.log(error);
         }
     }
-    async function getOrderByUser(address: String) {
+
+    async function getOrderByUser(address: `0x${string}` | undefined) {
         console.log("setting loader");
         //setLoader(true)
         try {
-            const { ethereum } = window;
-            if (ethereum) {
-                const provider = new ethers.providers.Web3Provider(ethereum);
-                const signer = provider.getSigner();
-                const TokenContract = new ethers.Contract(
-                    contractAddress,
-                    contractABI.abi,
-                    signer
-                );
-                await console.log(address)
-                const Txn = await TokenContract.userOrderIPFS(address);
-                const fetched = await useFetch(Txn.replace("ipfs://", "https://nftstorage.link/ipfs/"))
-                return fetched.data.value
-            } else {
-                console.log("Ethereum object doesn't exist!");
-            }
+            const data: any = await readContract({
+                address: contractAddress,
+                abi: contractABI.abi,
+                functionName: 'userOrderIPFS',
+                args: [address]
+            })
+            const fetched = await useFetch(data.replace("ipfs://", "https://nftstorage.link/ipfs/"))
+            orderUser.value = fetched.data.value
+            return fetched.data.value
         } catch (error) {
             //setLoader(false)
             console.log("Eroor");
             console.log(error);
         }
     }
-    async function checkforPurchase(address: String) {
+
+    async function checkforPurchase(address: string) {
         console.log("setting loader");
         //setLoader(true)
         try {
-            const { ethereum } = window;
-            if (ethereum) {
-                const provider = new ethers.providers.Web3Provider(ethereum);
-                const signer = provider.getSigner();
-                const TokenContract = new ethers.Contract(
-                    contractAddress,
-                    contractABI.abi,
-                    signer
-                );
-                await console.log(address)
-                const Txn = await TokenContract.orderMade(address);
-                console.log(
-                    Txn,
-                    "Link to txn",
-                    "https://sepolia.etherscan.io/tx/" + Txn.hash
-                );
-                console.log("Mining...", Txn.hash);
-                await Txn.wait();
-                console.log("Mined -- ", Txn.hash);
-            } else {
-                console.log("Ethereum object doesn't exist!");
-            }
+            console.log(address)
+            const data: any = await readContract({
+                address: contractAddress,
+                abi: contractABI.abi,
+                functionName: 'orderMade',
+                args: [address]
+            })
+            console.log(data)
+            return data
         } catch (error) {
             //setLoader(false)
             console.log("Eroor");
@@ -477,6 +461,7 @@ export const useCryptoStore = defineStore("user", () => {
         account,
         nfts,
         loading,
+        orderUser,
     };
 });
 // contract adress 0x35708b2605A08A471a80059a8D89d3E1B098FB06

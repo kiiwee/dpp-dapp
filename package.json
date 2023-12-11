@@ -13,6 +13,7 @@
     "@nuxt/devtools": "latest",
     "@nuxt/ui": "latest",
     "@pinia/nuxt": "latest",
+    "@use-wagmi/nuxt": "^1.1.8",
     "daisyui": "latest",
     "nuxt": "^3.8.1",
     "vue": "^3.3.8",
@@ -20,12 +21,15 @@
   },
   "dependencies": {
     "@popperjs/core": "^2.11.8",
+    "@wagmi/core": "^1.4.10",
+    "@web3modal/wagmi": "^3.4.0",
     "axios": "^1.6.2",
     "ethers": "^5.7.2",
     "geist": "^1.2.0",
     "nft.storage": "^7.1.1",
     "qr-scanner-wechat": "^0.1.3",
     "v-calendar": "next",
+    "viem": "^1.19.13",
     "vue-qrcode-reader": "^5.4.1",
     "zod": "^3.22.4"
   }

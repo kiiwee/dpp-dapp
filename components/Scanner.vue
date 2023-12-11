@@ -12,6 +12,7 @@
             <div v-if="validationPending" class="validation-pending">Checking Wallet for DPP...</div>
             <div v-if="noETH" class="validation-failure">Isnt Eth Address</div>
             <div v-if="routeETH" class="validation-success">Redirecting...</div>
+            <div v-if="noPurchase" class="validation-failure">No order made</div>
 
 
         </qrcode-stream>
@@ -21,23 +22,30 @@
 <script>
 import { QrcodeStream } from 'vue-qrcode-reader'
 
+
 export default {
+
     props: ['header', 'checkdpp', 'moveToDest'],
     components: { QrcodeStream },
 
     data() {
         return {
+
             routeandEth: undefined,
             isntETH: undefined,
             isValid: undefined,
             paused: false,
-            result: null
+            result: null,
+            hasPurchase: undefined
         }
     },
 
     computed: {
         routeETH() {
             return this.routeandEth === true
+        },
+        noPurchase() {
+            return this.hasPurchase === false
         },
         noETH() {
             return this.isntETH === true
@@ -64,6 +72,7 @@ export default {
 
         async onDetect([firstDetectedCode]) {
             this.result = firstDetectedCode.rawValue
+            const address = this.result.replace('ethereum:', '').split('@')[0]
             this.$emit('result-scan', this.result)
             if (!this.result.startsWith('ethereum:0x')) {
                 this.paused = true
@@ -75,13 +84,18 @@ export default {
                 return;
             }
             if (this.moveToDest) {
-                this.paused = true
 
                 // TODO: #1 Check for Purchase
+                const { checkforPurchase } = useCryptoStore(this.$pinia)
 
-                this.hasPurchase = true
-                await this.timeout(200)
-                await navigateTo("/buy/distributer/" + this.result)
+                this.hasPurchase = await checkforPurchase(address)
+                if (this.hasPurchase) {
+                    await this.timeout(200)
+                    await navigateTo("/buy/distributer/" + address)
+                }
+                await this.timeout(3000)
+
+                this.hasPurchase = undefined
                 return;
             }
             else if (this.checkdpp) {

@@ -18,10 +18,21 @@
 
 
         </div>
+
+
     </div>
 </template>
 
 <script setup lang="ts">
+
+const { getOrderByUserWagmi, } = useCryptoStore()
+import { getAccount } from '@wagmi/core'
+const { orderUser } = storeToRefs(useCryptoStore())
+
+console.log(getAccount())
+const account = getAccount()
+getOrderByUserWagmi(account.address)
+
 const colorMode = useColorMode();
 
 </script>

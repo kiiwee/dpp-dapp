@@ -15,7 +15,7 @@
 
 <script setup lang="ts">
 let scannedResult = ref('')
-function getResult(result: String) {
+function getResult(result: string) {
     scannedResult.value = result;
 }
 </script>

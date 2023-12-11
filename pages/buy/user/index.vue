@@ -49,6 +49,7 @@ const toIPFS = {
     depositTotal: 200,
     totalCost: 1800,
     colour: "",
+    model: "",
     accountAddress: account,
 }
 

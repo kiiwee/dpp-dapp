@@ -15,5 +15,9 @@ export default defineNuxtConfig({
   modules: ["@nuxt/ui", "@pinia/nuxt",
     // "@vite-pwa/nuxt"
   ],
-
+  vue: {
+    compilerOptions: {
+      isCustomElement: (tag) => ['w3m-button'].includes(tag),
+    },
+  }
 })
