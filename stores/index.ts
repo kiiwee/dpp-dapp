@@ -2,7 +2,7 @@
 import { acceptHMRUpdate, defineStore } from "pinia";
 // Setup: npm install alchemy-sdk
 import { ethers } from "ethers";
-const contractAddress = "0x64401922261928ca18e405c4b0c48d3f1641463e";
+const contractAddress = "0x170Dc614Ea5A2Df130763434aaB1BF1556D90cb5";
 import { NFTStorage, File, Blob } from "nft.storage";
 // The 'fs' builtin module on Node.js provides access to the file system
 import fs from "fs";
@@ -47,14 +47,14 @@ export const useCryptoStore = defineStore("user", () => {
     const orderUser = ref({})
 
     async function makePurchase(purchaseDetails: {
-        [key: string]: any; // 👈️ variable key
+        [key: string]: any;
     }) {
         console.log("setting loader");
         //setLoader(true)
         try {
             const account = getAccount()
-
-            if (account) {
+            const orderBool = await checkforPurchase(account.address);
+            if (account && !orderBool) {
                 const client = new NFTStorage({ token: NFT_STORAGE_TOKEN });
                 //TODO: #4 Fix get wallet address before trigger
                 const description = "Order Created by" + account.address
@@ -92,7 +92,7 @@ export const useCryptoStore = defineStore("user", () => {
                 );
                 console.log("Mining...", hash);
             } else {
-                console.log("Ethereum object doesn't exist!");
+                console.log("No Connected account and/or purchase already made");
             }
         } catch (error) {
             //setLoader(false)
@@ -126,7 +126,7 @@ export const useCryptoStore = defineStore("user", () => {
         }
     }
 
-    async function checkforPurchase(address: string) {
+    async function checkforPurchase(address: any) {
         console.log("setting loader");
         //setLoader(true)
         try {
@@ -150,7 +150,6 @@ export const useCryptoStore = defineStore("user", () => {
         console.log("setting loader");
         //setLoader(true)
         try {
-            console.log(address)
             const { hash } = await writeContract({
                 address: contractAddress,
                 abi: contractABI.abi,
@@ -168,7 +167,6 @@ export const useCryptoStore = defineStore("user", () => {
         console.log("setting loader");
         //setLoader(true)
         try {
-            console.log(address)
             const { hash } = await writeContract({
                 address: contractAddress,
                 abi: contractABI.abi,
