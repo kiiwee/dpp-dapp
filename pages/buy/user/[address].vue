@@ -2,9 +2,10 @@
     <div class="flex flex-row p-5 justify-center items-center">
         <h1 class="text-5xl">DPP Order Page</h1>
     </div>
-    <div v-if="orderContents">
+    <ClientOnly>
 
-        <ClientOnly>
+        <div v-if="orderContents">
+
 
 
             <div class="flex flex-row p-5 justify-center items-center">
@@ -75,14 +76,15 @@
                     <!-- <figure><img src="/dummy.avif" alt="Shoes" /></figure> -->
                 </div>
             </div>
-        </ClientOnly>
 
-    </div>
-    <div v-else>
-        <div class="flex flex-row p-5 justify-center items-center">
-            <h1 class="text-5xl text-red-500">No order on this account</h1>
+
         </div>
-    </div>
+        <div v-else>
+            <div class="flex flex-row p-5 justify-center items-center">
+                <h1 class="text-5xl text-red-500">No order on this account</h1>
+            </div>
+        </div>
+    </ClientOnly>
 </template>
 <script setup lang="ts">
 const route = useRoute()
@@ -101,9 +103,6 @@ function declinePurchase() {
     cancelPurchaseUser()
 }
 
-console.log(orderContents)
-// When accessing /posts/1, route.params.id will be 1
-console.log(route.params.address)
 </script>
 
 <style scoped></style>

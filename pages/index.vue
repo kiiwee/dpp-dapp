@@ -3,7 +3,19 @@ const route = useRoute()
 import { storeToRefs } from 'pinia'
 import { useCryptoStore } from '../stores/index'
 const cryptoStore = useCryptoStore()
-const { connectWallet, mintAsset, getNFTs, mint_with_uri } = useCryptoStore()
+const { } = useCryptoStore()
+useSeoMeta({
+  title: 'DPP Control Centre',
+  description: 'A webApp that allows interacting with the DPP Smart Contract',
+  ogTitle: 'DPP Control Centre',
+  ogDescription: 'A webApp that allows interacting with the DPP Smart Contract',
+  ogImage: '[og:image]',
+  ogUrl: '[og:url]',
+  twitterTitle: 'DPP Control Centre',
+  twitterDescription: 'A webApp that allows interacting with the DPP Smart Contract',
+  twitterImage: '[twitter:image]',
+  twitterCard: 'summary'
+})
 </script>
 
 <template>
