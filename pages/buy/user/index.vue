@@ -3,9 +3,10 @@
         <div class="flex flex-row p-5 justify-center items-center pb-24">
             <h1 class="text-5xl">Purchase a Bike Page</h1>
         </div>
-        <div v-if="!purchase">
+        <ClientOnly>
 
-            <ClientOnly>
+            <div v-if="!purchase">
+
                 <div class=" items-center  justify-center flex-col flex  gap-2 ">
                     <label class="form-control w-full max-w-xs">
                         <div class="label">
@@ -24,7 +25,6 @@
                         <select class="select select-bordered" v-model="toIPFS.colour">
                             <option disabled selected>Color</option>
                             <option v-for="colour of colours" :key="colour">{{ colour }}</option>
-
                         </select>
                     </label>
                     <h2 class="p-2"> Bike Cost : {{ toIPFS.bikeCost }} wei</h2>
@@ -37,13 +37,14 @@
                         Purchase
                     </button>
                 </div>
-            </ClientOnly>
-        </div>
-        <div v-else>
-            <div class="flex flex-row justify-center items-center">
-                <h1 class="text-5xl text-red-500">You have already made a purchase of a bike!</h1>
             </div>
-        </div>
+            <div v-else>
+                <div class="flex flex-row justify-center items-center">
+                    <h1 class="text-5xl text-red-500">You have already made a purchase of a bike!</h1>
+                </div>
+            </div>
+        </ClientOnly>
+
     </div>
 </template>
 
