@@ -21,7 +21,7 @@ import { readContract, getAccount, writeContract } from '@wagmi/core'
 import { parseEther, parseGwei, type Address } from "viem";
 
 
-const baseURL = `https://eth-sepolia.g.alchemy.com/v2/1e3k-TtozfGSz3WflkBQZQVauAp1WYFv`;
+const baseURL = `https://eth-sepolia.g.alchemy.com/v3/1e3k-TtozfGSz3WflkBQZQVauAp1WYFv`;
 // const url = `${baseURL}/getNFTMetadata/?contractAddress=${contractAddress}&tokenId=${route.params.id}`;
 // const config = {
 //     method: 'get',
@@ -46,6 +46,64 @@ export const useCryptoStore = defineStore("user", () => {
     const nfts = ref(null);
     const orderUser = ref({})
 
+    async function approvePurchase(addressUser: any, purchaseDetails: {
+        [key: string]: any;
+    }) {
+        console.log("setting loader");
+        //setLoader(true)
+        try {
+            const account = getAccount()
+            if (account) {
+                const client = new NFTStorage({ token: NFT_STORAGE_TOKEN });
+                //TODO: #4 Fix get wallet address before trigger
+                const description = "Order Created by" + account.address
+                const metadata = await client.store({
+                    "name": "Digital Product Passport",
+                    "description": description,
+                    "image": new File(["<DATA>"], "../public/favicon.ico", {
+                        type: "image/ico",
+                    }),
+                    "quantity": 1,
+                    "bikeCost": purchaseDetails.bikeCost,
+                    "deposit": {
+                        "depositFrame": purchaseDetails.depositFrame,
+                        "depositFrontWheel": purchaseDetails.depositFrontWheel,
+                        "depositBackWheel": purchaseDetails.depositBackWheel,
+                        "depositTotal": purchaseDetails.depositTotal,
+                    },
+                    "totalCost": purchaseDetails.totalCost,
+                    "colour": purchaseDetails.colour,
+                    "model": purchaseDetails.model,
+                    "ids": purchaseDetails.ids,
+                    "warranty": purchaseDetails.warranty,
+                    "dateOfPurchase": purchaseDetails.warranty.startWarranty,
+                    "distributor": account.address,
+                });
+
+                console.log("NFT data stored!");
+                console.log("Metadata URI: ", metadata.url);
+                const { hash } = await writeContract({
+                    address: contractAddress,
+                    abi: contractABI.abi,
+                    functionName: 'approvePurchase',
+                    args: [addressUser, metadata.url],
+                })
+
+                console.log(
+                    hash,
+                    "Link to txn",
+                    "https://sepolia.etherscan.io/tx/" + hash
+                );
+                console.log("Mining...", hash);
+            } else {
+                console.log("No Connected account and/or purchase already made");
+            }
+        } catch (error) {
+            //setLoader(false)
+            console.log("Eroor");
+            console.log(error);
+        }
+    }
     async function makePurchase(purchaseDetails: {
         [key: string]: any;
     }) {
@@ -54,8 +112,8 @@ export const useCryptoStore = defineStore("user", () => {
         try {
             const account = getAccount()
             const orderBool = await checkforPurchase(account.address);
+
             if (account && !orderBool) {
-                const client = new NFTStorage({ token: NFT_STORAGE_TOKEN });
                 //TODO: #4 Fix get wallet address before trigger
                 const description = "Order Created by" + account.address
                 const metadata = await client.store({
@@ -100,7 +158,6 @@ export const useCryptoStore = defineStore("user", () => {
             console.log(error);
         }
     }
-
     async function getOrderByUser(address: `0x${string}` | any) {
         console.log("setting loader");
         //setLoader(true)
@@ -113,8 +170,6 @@ export const useCryptoStore = defineStore("user", () => {
             })
             if (data) {
                 const fetched = await useLazyFetch(data.replace("ipfs://", "https://nftstorage.link/ipfs/"))
-                console.log("Hello")
-                console.log(fetched)
                 orderUser.value = fetched.data.value
                 return fetched.data.value
             }
@@ -194,7 +249,8 @@ export const useCryptoStore = defineStore("user", () => {
             //const nftjson = await alchemy.nft.getNftsForOwner(myAccounts[0]);
             //console.log(nftjson.ownedNfts[3]);
             //nfts.value = nftjson.ownedNfts;
-            const url = `${baseURL}/getNFTs/?owner=${address}&contractAddresses[]=0xffde398a3dc75b951b750e3db6dbd2a99aa2503b&withMetadata=true`;
+
+            const url = `${baseURL}/getNFTsForOwner/?owner=${address}&contractAddresses[]=${contractAddress}&withMetadata=true`;
             const config = {
                 method: "get",
                 url: url,
@@ -213,23 +269,21 @@ export const useCryptoStore = defineStore("user", () => {
     }
     async function getNFTsByContract() {
         try {
-            loading.value = true;
-            const { ethereum } = window;
-            if (!ethereum) {
-                alert("Must connect to MetaMask!");
-                return;
-            }
-            // console.log(this.$config.INFURA_API_KEY)
-            //const myAccounts = await ethereum.request({ method: 'eth_requestAccounts' })
-            //const nftjson = await alchemy.nft.getNftsForOwner(myAccounts[0]);
-            //console.log(nftjson.ownedNfts[3]);
-            //nfts.value = nftjson.ownedNfts;
-            const url = `${baseURL}/getNFTsForContract?contractAddress=0xffde398a3dc75b951b750e3db6dbd2a99aa2503b&withMetadata=true`;
+            const accountAddress = getAccount().address
+            const options = { method: 'GET', headers: { accept: 'application/json' } };
+            const url = `${baseURL}/getNFTsForOwner?owner=${address}&contractAddresses[]=${contractAddress}&withMetadata=true`;
+            const urll = 'https://eth-sepolia.g.alchemy.com/nft/v3/1e3k-TtozfGSz3WflkBQZQVauAp1WYFv/getNFTsForOwner?owner=0x9e2BB71110d724d8712B94C5Ba4C07F2E7bcD3dA&contractAddresses[]=0x170Dc614Ea5A2Df130763434aaB1BF1556D90cb5&withMetadata=true&pageSize=100'
+
+            // fetch('https://eth-sepolia.g.alchemy.com/nft/v3/docs-demo/getNFTsForOwner?owner=0x9e2BB71110d724d8712B94C5Ba4C07F2E7bcD3dA&contractAddresses[]=${}&withMetadata=true&pageSize=100', options)
+            //     .then(response => response.json())
+            //     .then(response => console.log(response))
+            //     .catch(err => console.error(err));
+
             const config = {
                 method: "get",
-                url: url,
+                url: urll,
             };
-            axios(config)
+            await axios(config)
                 .then((response) => {
                     // console.log(response['data'].ownedNfts)
                     nfts.value = response["data"];
@@ -249,6 +303,7 @@ export const useCryptoStore = defineStore("user", () => {
         getOrderByUser,
         cancelPurchaseUser,
         cancelPurchaseDistributer,
+        approvePurchase,
         account,
         nfts,
         loading,

@@ -16,12 +16,6 @@
                             <h1 class="card-title py-2">Order #{Order Number}</h1>
                             <h2>POS Date Time: 00:00:00 1/1/2024 ADD TO PROCESS</h2>
                             <div>
-                                <h2>Order Made By: </h2>
-                                <div class="ml-10 font-bold">
-                                    <h2> {{ route.params.address }}</h2>
-                                </div>
-                            </div>
-                            <div>
                                 <h2>Colour: </h2>
                                 <div class="ml-10">
                                     <h2>{{ orderContents.colour }}</h2>
@@ -37,7 +31,7 @@
                                 <h2>Bike Cost: {{ orderContents.bikeCost }} wei </h2>
 
                             </div>
-                            <div>
+                            <!-- <div>
                                 <h2>Deposit Break Down: </h2>
                                 <div class="ml-10 mb-2">
                                     <h2>Frame: {{ orderContents.depositFrame }}</h2>
@@ -54,18 +48,69 @@
                                 <div class="ml-10">
                                     <h2>{{ orderContents.totalCost }}</h2>
                                 </div>
-                            </div>
-                            <h2>Made From: </h2>
-                            <div class="ml-10">
+                            </div> -->
+                            <div>
                                 <h2>Origin: </h2>
                                 <div class="ml-10">
                                     <h2> Frame: France</h2>
                                     <h2> Wheels: France</h2>
                                 </div>
-                                <h2>Deposit: </h2>
+                            </div>
+                            <div>
+                                <h1>Frame ID:</h1>
+                                <UInput class="w-72" v-model="dppContents.frameID" name="q" placeholder="Search..."
+                                    icon="i-heroicons-identification" autocomplete="off"
+                                    :ui="{ icon: { trailing: { pointer: '' } } }">
+                                    <template #trailing>
+                                        <UButton v-show="dppContents.frameID !== ''" color="gray" variant="link"
+                                            icon="i-heroicons-x-mark-20-solid" :padded="false"
+                                            @click="dppContents.frameID = ''" />
+                                    </template>
+                                </UInput>
+                            </div>
+                            <div>
+                                <h1>Front Wheel ID:</h1>
+                                <UInput class="w-72" v-model="dppContents.frontWheelID" name="q" placeholder="Search..."
+                                    icon="i-heroicons-identification" autocomplete="off"
+                                    :ui="{ icon: { trailing: { pointer: '' } } }">
+                                    <template #trailing>
+                                        <UButton v-show="dppContents.frontWheelID !== ''" color="gray" variant="link"
+                                            icon="i-heroicons-x-mark-20-solid" :padded="false"
+                                            @click="dppContents.frameID = ''" />
+                                    </template>
+                                </UInput>
+                            </div>
+                            <div>
+                                <h1>Back Wheel ID:</h1>
+                                <UInput class="w-72" v-model="dppContents.backWheelID" name="q" placeholder="Search..."
+                                    icon="i-heroicons-identification" autocomplete="off"
+                                    :ui="{ icon: { trailing: { pointer: '' } } }">
+                                    <template #trailing>
+                                        <UButton v-show="dppContents.backWheelID !== ''" color="gray" variant="link"
+                                            icon="i-heroicons-x-mark-20-solid" :padded="false"
+                                            @click="dppContents.frameID = ''" />
+                                    </template>
+                                </UInput>
+                            </div>
+                            <div>
+                                <h1>
+
+                                </h1>
+                                <div class="flex justify-center items-center">
+                                    <UPopover :popper="{ placement: 'bottom-start' }">
+                                        <UButton icon="i-heroicons-calendar-days-20-solid" :label="label" />
+
+                                        <template #panel="{ close }">
+                                            <LazyDatePicker v-model="endWarranty" @close="close" />
+                                        </template>
+                                    </UPopover>
+                                </div>
+
+                            </div>
+                            <div>
+                                <h2>Start of warranty: </h2>
                                 <div class="ml-10">
-                                    <h2> Frame: 100</h2>
-                                    <h2> Wheels: 50</h2>
+                                    <h2>{{ todayDate }}</h2>
                                 </div>
                             </div>
                             <div class="card-actions justify-center mt-2">
@@ -84,7 +129,6 @@
                 </div>
             </div>
         </ClientOnly>
-
     </div>
     <div v-else>
         <div class="flex flex-row p-5 justify-center items-center">
@@ -95,23 +139,41 @@
 <script setup lang="ts">
 const route = useRoute()
 
-const { checkforPurchase, getOrderByUser, cancelPurchaseDistributer } = useCryptoStore()
+const { checkforPurchase, getOrderByUser, cancelPurchaseDistributer, approvePurchase } = useCryptoStore()
+const endWarranty = ref(new Date())
+const today = new Date();
 
+const todayDate = today.getDate() + '/' + (today.getMonth() + 1) + '/' + today.getFullYear();
+
+const label = computed(() => endWarranty.value.toLocaleDateString('en-GB', { year: 'numeric', month: 'numeric', day: 'numeric' })
+)
 const orderContents = await getOrderByUser(route.params.address)
-
+const dppContents = ref({
+    frameID: '',
+    frontWheelID: '',
+    backWheelID: '',
+})
+console.log(orderContents)
 // TODO: #3 Accept and decline Purchase
 import { storeToRefs } from 'pinia'
 const cryptoStore = useCryptoStore()
 function acceptPurchase() {
+    const dppToIPFS = {
+        ...orderContents,
+        ids: dppContents.value,
+        warranty: {
+            startWarranty: todayDate,
+            endWarranty: label.value,
+        },
+        distributerAddress: "TO_BE_ADDED"
+    }
+    console.log(dppToIPFS)
+    approvePurchase(route.params.address, dppToIPFS)
 
 }
 function declinePurchase() {
     cancelPurchaseDistributer(route.params.address)
 }
-
-console.log(orderContents)
-// When accessing /posts/1, route.params.id will be 1
-console.log(route.params.address)
 </script>
 
 <style scoped></style>

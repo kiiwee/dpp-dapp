@@ -3,9 +3,10 @@
         <div class="flex flex-row p-5 justify-center items-center pb-24">
             <h1 class="text-5xl">Purchase a Bike Page</h1>
         </div>
-        <div v-if="!purchase">
+        <ClientOnly>
 
-            <ClientOnly>
+            <div v-if="!purchase">
+
                 <div class=" items-center  justify-center flex-col flex  gap-2 ">
                     <label class="form-control w-full max-w-xs">
                         <div class="label">
@@ -36,13 +37,14 @@
                         Purchase
                     </button>
                 </div>
-            </ClientOnly>
-        </div>
-        <div v-else>
-            <div class="flex flex-row justify-center items-center">
-                <h1 class="text-5xl text-red-500">You have already made a purchase of a bike!</h1>
             </div>
-        </div>
+            <div v-else>
+                <div class="flex flex-row justify-center items-center">
+                    <h1 class="text-5xl text-red-500">You have already made a purchase of a bike!</h1>
+                </div>
+            </div>
+        </ClientOnly>
+
     </div>
 </template>
 

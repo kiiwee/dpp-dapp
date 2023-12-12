@@ -86,6 +86,8 @@
     </div>
 </template>
 <script setup lang="ts">
+const { getNFTsByContract } = useCryptoStore()
+getNFTsByContract()
 const route = useRoute()
 const { data: itemJson } = await useFetch("https://bafybeifwrdj7ircxzaqkwzacdp3gkcamnhgawmflnyh7lccusd43niyvpu.ipfs.nftstorage.link/000000000000000000000000000000000000000000000000000000000000000" + route.params.id + ".json")
 
