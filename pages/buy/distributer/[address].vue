@@ -1,22 +1,26 @@
 <template>
-    <div class="flex flex-row p-5 justify-center items-center">
+    <div class="flex flex-row pb-2 justify-center items-center">
         <h1 class="text-5xl">DPP Distributer Order Page</h1>
     </div>
     <div v-if="orderContents">
         <ClientOnly>
 
             <div>
-                <div class="flex flex-row p-5 justify-center items-center">
-                    <h1 class="text-5xl">DPP Order Page</h1>
-                </div>
-                <div class="flex flex-row p-5 justify-center items-center">
+
+                <div class="flex flex-row  justify-center items-center">
                     <h1 class="text-xl">Order for address: {{ route.params.address }}</h1>
                 </div>
-                <div class="flex flex-row  justify-center items-center p-10">
+                <div class="flex flex-row  justify-center items-center ">
                     <div class="card justify-center w-fit bg-base-100 shadow-xl ">
                         <div class="card-body">
                             <h1 class="card-title py-2">Order #{Order Number}</h1>
                             <h2>POS Date Time: 00:00:00 1/1/2024 ADD TO PROCESS</h2>
+                            <div>
+                                <h2>Order Made By: </h2>
+                                <div class="ml-10 font-bold">
+                                    <h2> {{ route.params.address }}</h2>
+                                </div>
+                            </div>
                             <div>
                                 <h2>Colour: </h2>
                                 <div class="ml-10">
@@ -64,7 +68,7 @@
                                     <h2> Wheels: 50</h2>
                                 </div>
                             </div>
-                            <div class="card-actions justify-center mt-10">
+                            <div class="card-actions justify-center mt-2">
                                 <button @click="acceptPurchase()" class="btn mr-5 text-xl btn-success "> Accept</button>
                                 <button @click="declinePurchase()" class="btn ml-5 text-xl btn-error ">
                                     Decline</button>

@@ -24,7 +24,6 @@
                         <select class="select select-bordered" v-model="toIPFS.colour">
                             <option disabled selected>Color</option>
                             <option v-for="colour of colours" :key="colour">{{ colour }}</option>
-
                         </select>
                     </label>
                     <h2 class="p-2"> Bike Cost : {{ toIPFS.bikeCost }} wei</h2>
