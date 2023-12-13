@@ -80,9 +80,13 @@
 
         </div>
         <div v-else>
-            <div class="flex flex-row p-5 justify-center items-center">
+            <div class="flex flex-col p-5 justify-center items-center">
                 <h1 class="text-5xl text-red-500">No order on this account</h1>
+
+                <NuxtLink class="btn btn-lg ml-5 text-xl btn-primary mt-24 " to="/buy/user/">Buy A Bike</NuxtLink>
+
             </div>
+
         </div>
     </ClientOnly>
 </template>

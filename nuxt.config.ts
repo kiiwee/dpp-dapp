@@ -19,5 +19,6 @@ export default defineNuxtConfig({
     compilerOptions: {
       isCustomElement: (tag) => ['w3m-button'].includes(tag),
     },
-  }
+  },
+
 })
