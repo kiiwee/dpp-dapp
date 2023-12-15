@@ -1,11 +1,14 @@
 <template data-theme="light">
-  <NavBar></NavBar>
   <div>
 
+    <NavBar class=" fixed backdrop-blur-xl  	" />
+    <div class="pt-20">
+      <NuxtPage />
+    </div>
+    <UNotifications />
   </div>
-
-  <NuxtPage />
 </template>
 <script>
+
 
 </script>

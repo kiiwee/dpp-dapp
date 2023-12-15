@@ -1,7 +1,6 @@
 // import { Alchemy, Network } from 'alchemy-sdk'
 import { acceptHMRUpdate, defineStore } from "pinia";
 // Setup: npm install alchemy-sdk
-import { ethers } from "ethers";
 const contractAddress = "0x170Dc614Ea5A2Df130763434aaB1BF1556D90cb5";
 import { NFTStorage, File, Blob } from "nft.storage";
 // The 'fs' builtin module on Node.js provides access to the file system
@@ -17,7 +16,7 @@ const NFT_STORAGE_TOKEN =
 const client = new NFTStorage({ token: NFT_STORAGE_TOKEN });
 import axios from "axios";
 const address = "0x9e2BB71110d724d8712B94C5Ba4C07F2E7bcD3dA";
-import { readContract, getAccount, writeContract } from '@wagmi/core'
+import { readContract, getAccount, writeContract, waitForTransaction } from '@wagmi/core'
 import { parseEther, parseGwei, type Address } from "viem";
 
 
@@ -45,6 +44,7 @@ export const useCryptoStore = defineStore("user", () => {
     const loading = ref(true);
     const nfts = ref(null);
     const orderUser = ref({})
+    const loaderPurchase = ref(0)
 
     async function approvePurchase(addressUser: any, purchaseDetails: {
         [key: string]: any;
@@ -54,6 +54,8 @@ export const useCryptoStore = defineStore("user", () => {
         try {
             const account = getAccount()
             if (account) {
+                loaderPurchase.value = 0
+
                 const client = new NFTStorage({ token: NFT_STORAGE_TOKEN });
                 //TODO: #4 Fix get wallet address before trigger
                 const description = "Order Created by" + account.address
@@ -82,6 +84,8 @@ export const useCryptoStore = defineStore("user", () => {
 
                 console.log("NFT data stored!");
                 console.log("Metadata URI: ", metadata.url);
+                loaderPurchase.value = 1
+
                 const { hash } = await writeContract({
                     address: contractAddress,
                     abi: contractABI.abi,
@@ -89,16 +93,21 @@ export const useCryptoStore = defineStore("user", () => {
                     args: [addressUser, metadata.url],
                 })
 
-                console.log(
-                    hash,
-                    "Link to txn",
-                    "https://sepolia.etherscan.io/tx/" + hash
-                );
-                console.log("Mining...", hash);
+                loaderPurchase.value = 2
+
+                const data = await waitForTransaction({
+                    hash: hash
+                })
+                loaderPurchase.value = 3
+
+                console.log('Transaction mined at: ')
+                console.log(data)
+                return data;
             } else {
                 console.log("No Connected account and/or purchase already made");
             }
         } catch (error) {
+            loaderPurchase.value = 0
             //setLoader(false)
             console.log("Eroor");
             console.log(error);
@@ -107,7 +116,6 @@ export const useCryptoStore = defineStore("user", () => {
     async function makePurchase(purchaseDetails: {
         [key: string]: any;
     }) {
-        console.log("setting loader");
         //setLoader(true)
         try {
             const account = getAccount()
@@ -116,6 +124,7 @@ export const useCryptoStore = defineStore("user", () => {
             if (account && !orderBool) {
                 //TODO: #4 Fix get wallet address before trigger
                 const description = "Order Created by" + account.address
+                loaderPurchase.value = 0
                 const metadata = await client.store({
                     "name": "Bike Order",
                     "description": description,
@@ -132,6 +141,7 @@ export const useCryptoStore = defineStore("user", () => {
                     "colour": purchaseDetails.colour,
                     "model": purchaseDetails.model
                 });
+                loaderPurchase.value = 1
 
                 console.log("NFT data stored!");
                 console.log("Metadata URI: ", metadata.url);
@@ -142,17 +152,28 @@ export const useCryptoStore = defineStore("user", () => {
                     args: [metadata.url],
                     value: parseEther('0.0000000000000018'),
                 })
+                loaderPurchase.value = 2
 
-                console.log(
-                    hash,
-                    "Link to txn",
-                    "https://sepolia.etherscan.io/tx/" + hash
-                );
-                console.log("Mining...", hash);
+                const data = await waitForTransaction({
+                    hash: hash
+                })
+                loaderPurchase.value = 3
+
+                console.log('Transaction mined at: ')
+                console.log(data)
+                return data;
+                // console.log(
+                //     hash,
+                //     "Link to txn",
+                //     "https://sepolia.etherscan.io/tx/" + hash
+                // );
+                // console.log("Mining...", hash);
             } else {
                 console.log("No Connected account and/or purchase already made");
             }
         } catch (error) {
+            loaderPurchase.value = 0
+            return false;
             //setLoader(false)
             console.log("Eroor");
             console.log(error);
@@ -182,17 +203,14 @@ export const useCryptoStore = defineStore("user", () => {
     }
 
     async function checkforPurchase(address: any) {
-        console.log("setting loader");
         //setLoader(true)
         try {
-            console.log(address)
             const data = await readContract({
                 address: contractAddress,
                 abi: contractABI.abi,
                 functionName: 'orderMade',
                 args: [address]
             })
-            console.log(data)
             return data
         } catch (error) {
             //setLoader(false)
@@ -211,7 +229,11 @@ export const useCryptoStore = defineStore("user", () => {
                 functionName: 'cancelPurchase_User',
             })
             console.log("https://sepolia.etherscan.io/tx/" + hash)
-            return hash
+            const data = await waitForTransaction({
+                hash: hash
+            })
+            return data
+
         } catch (error) {
             //setLoader(false)
             console.log("Eroor");
@@ -222,16 +244,29 @@ export const useCryptoStore = defineStore("user", () => {
         console.log("setting loader");
         //setLoader(true)
         try {
+            loaderPurchase.value = 0
+
             const { hash } = await writeContract({
                 address: contractAddress,
                 abi: contractABI.abi,
                 functionName: 'cancelPurchase_Distributor',
                 args: [address]
             })
-            console.log("https://sepolia.etherscan.io/tx/" + hash)
-            return hash
+            loaderPurchase.value = 1
+
+            const data = await waitForTransaction({
+                hash: hash
+            })
+            loaderPurchase.value = 2
+
+            console.log('Transaction mined at: ')
+            console.log(data)
+            return data;
+
         } catch (error) {
             //setLoader(false)
+            loaderPurchase.value = 0
+
             console.log("Eroor");
             console.log(error);
         }
@@ -278,7 +313,6 @@ export const useCryptoStore = defineStore("user", () => {
             //     .then(response => response.json())
             //     .then(response => console.log(response))
             //     .catch(err => console.error(err));
-
             const config = {
                 method: "get",
                 url: urll,
@@ -308,6 +342,7 @@ export const useCryptoStore = defineStore("user", () => {
         nfts,
         loading,
         orderUser,
+        loaderPurchase,
     };
 });
 // contract adress 0x35708b2605A08A471a80059a8D89d3E1B098FB06
