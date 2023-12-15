@@ -12,7 +12,8 @@
                     <div class="card justify-center w-96 bg-base-100 shadow-xl ">
                         <div class="card-body">
                             <h1 class="card-title py-2 truncate">Order for {{ route.params.address }}</h1>
-                            <h2 class="line-through">POS Date Time: 00:00:00 1/1/2024 </h2>
+                            <h2>POS Date Time: {{ orderContents.datetimePOS.datePOS }} {{ orderContents.datetimePOS.timePOS
+                            }} </h2>
                             <div>
                                 <h2>Colour: {{ orderContents.colour }}</h2>
 

@@ -139,7 +139,8 @@ export const useCryptoStore = defineStore("user", () => {
                     "depositTotal": purchaseDetails.depositTotal,
                     "totalCost": purchaseDetails.totalCost,
                     "colour": purchaseDetails.colour,
-                    "model": purchaseDetails.model
+                    "model": purchaseDetails.model,
+                    "datetimePOS": purchaseDetails.datetimePOS,
                 });
                 loaderPurchase.value = 1
 
