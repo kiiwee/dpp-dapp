@@ -18,6 +18,7 @@ import axios from "axios";
 const address = "0x9e2BB71110d724d8712B94C5Ba4C07F2E7bcD3dA";
 import { readContract, getAccount, writeContract, waitForTransaction } from '@wagmi/core'
 import { parseEther, parseGwei, type Address } from "viem";
+import { reset } from "viem/_types/actions/test/reset";
 
 
 const baseURL = `https://eth-sepolia.g.alchemy.com/v3/1e3k-TtozfGSz3WflkBQZQVauAp1WYFv`;
@@ -42,8 +43,8 @@ const baseURL = `https://eth-sepolia.g.alchemy.com/v3/1e3k-TtozfGSz3WflkBQZQVauA
 export const useCryptoStore = defineStore("user", () => {
     const account = ref(null);
     const loading = ref(true);
-    const nfts = ref(null);
-    const orderUser = ref({})
+    const nfts: any = ref({});
+    const orderUser = ref()
     const loaderPurchase = ref(0)
 
     async function approvePurchase(addressUser: any, purchaseDetails: {
@@ -73,6 +74,7 @@ export const useCryptoStore = defineStore("user", () => {
                         "depositBackWheel": purchaseDetails.depositBackWheel,
                         "depositTotal": purchaseDetails.depositTotal,
                     },
+                    "datetimePOS": purchaseDetails.datetimePOS,
                     "totalCost": purchaseDetails.totalCost,
                     "colour": purchaseDetails.colour,
                     "model": purchaseDetails.model,
@@ -306,26 +308,27 @@ export const useCryptoStore = defineStore("user", () => {
     async function getNFTsByContract() {
         try {
             const accountAddress = getAccount().address
-            const options = { method: 'GET', headers: { accept: 'application/json' } };
-            const url = `${baseURL}/getNFTsForOwner?owner=${address}&contractAddresses[]=${contractAddress}&withMetadata=true`;
-            const urll = 'https://eth-sepolia.g.alchemy.com/nft/v3/1e3k-TtozfGSz3WflkBQZQVauAp1WYFv/getNFTsForOwner?owner=0x9e2BB71110d724d8712B94C5Ba4C07F2E7bcD3dA&contractAddresses[]=0x170Dc614Ea5A2Df130763434aaB1BF1556D90cb5&withMetadata=true&pageSize=100'
-
-            // fetch('https://eth-sepolia.g.alchemy.com/nft/v3/docs-demo/getNFTsForOwner?owner=0x9e2BB71110d724d8712B94C5Ba4C07F2E7bcD3dA&contractAddresses[]=${}&withMetadata=true&pageSize=100', options)
-            //     .then(response => response.json())
-            //     .then(response => console.log(response))
-            //     .catch(err => console.error(err));
+            const url = `https://eth-sepolia.g.alchemy.com/nft/v3/1e3k-TtozfGSz3WflkBQZQVauAp1WYFv/getNFTsForOwner?owner=${accountAddress}&contractAddresses[]=${contractAddress}&withMetadata=true&pageSize=100`
             const config = {
                 method: "get",
-                url: urll,
+                url: url,
             };
-            await axios(config)
-                .then((response) => {
-                    // console.log(response['data'].ownedNfts)
-                    nfts.value = response["data"];
-                    loading.value = false;
-                })
-                .catch((error) => console.log("error", error));
-            console.log("nfts on store:", nfts.value);
+            const res: any = await axios(config).catch((error) => console.log("error", error));
+            nfts.value = res.data
+
+            console.log("nfts on store updated:", nfts.value);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    async function getNFTwithID(id: any) {
+        try {
+
+
+            const res = await useFetch(`https://eth-sepolia.g.alchemy.com/nft/v3/1e3k-TtozfGSz3WflkBQZQVauAp1WYFv/getNFTMetadata?contractAddress=${contractAddress}&tokenId=${id}&refreshCache=false`)
+            console.log("nft got:", res.data.value);
+
+            return res.data.value
         } catch (error) {
             console.log(error);
         }
@@ -338,7 +341,7 @@ export const useCryptoStore = defineStore("user", () => {
         getOrderByUser,
         cancelPurchaseUser,
         cancelPurchaseDistributer,
-        approvePurchase,
+        approvePurchase, getNFTwithID,
         account,
         nfts,
         loading,

@@ -108,7 +108,7 @@ const toIPFS = {
     depositFrame: 400,
     depositFrontWheel: 200,
     depositBackWheel: 200,
-    depositTotal: 200,
+    depositTotal: 800,
     totalCost: 1800,
     colour: "",
     model: "",

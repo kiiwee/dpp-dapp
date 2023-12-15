@@ -111,8 +111,13 @@
                             </div>
 
                             <div class="card-actions justify-center mt-2">
-                                <button @click="acceptPurchase()" class="btn mr-5 text-xl btn-success "> Accept</button>
-                                <button @click="declinePurchase()" class="btn ml-5 text-xl btn-error ">
+                                <button :disabled="loaderShow" v-if="acceptShow" @click="acceptPurchase()"
+                                    class="btn mr-5 text-xl btn-success "> <span v-if="loaderShow"
+                                        class="loading loading-spinner"></span>
+                                    Accept</button>
+                                <button :disabled="loaderShow" v-if="declineShow" @click="declinePurchase()"
+                                    class="btn ml-5 text-xl btn-error ">
+                                    <span v-if="loaderShow" class="loading loading-spinner"></span>
                                     Decline</button>
                             </div>
                             <!-- <h2>{{ itemJson.description }}</h2>
@@ -184,6 +189,8 @@ const dppContents = ref({
     frontWheelID: "",
     backWheelID: "",
 })
+const declineShow = ref(true)
+const acceptShow = ref(true)
 const loaderShow = ref(false)
 const { loaderPurchase } = storeToRefs(useCryptoStore())
 const steps = ref()
@@ -217,6 +224,7 @@ async function acceptPurchase() {
     }
     steps.value = stepsApprove
     loaderShow.value = !loaderShow.value
+    declineShow.value = !declineShow.value
     const dppToIPFS = {
         ...orderContents,
         ids: dppContents.value,
@@ -257,7 +265,7 @@ async function acceptPurchase() {
         })
     }
     await setTimeout(() => { console.log("Approve Purchase Complete") }, 10000); // 3 sec
-
+    declineShow.value = !declineShow.value
     loaderShow.value = !loaderShow.value
 
 
@@ -266,6 +274,7 @@ async function declinePurchase() {
     steps.value = stepsDecline
 
     loaderShow.value = !loaderShow.value
+    acceptShow.value = !acceptShow.value
 
     const transactionData = await cancelPurchaseDistributer(route.params.address)
     if (transactionData) {
@@ -298,6 +307,8 @@ async function declinePurchase() {
     }
     await setTimeout(() => { console.log("Cancel Purchase Complete") }, 10000); // 3 sec
     loaderShow.value = !loaderShow.value
+    acceptShow.value = !acceptShow.value
+
     steps.value = ""
 
 }

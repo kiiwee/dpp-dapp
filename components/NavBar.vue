@@ -1,5 +1,5 @@
 <template>
-    <div class="navbar bg-base-100">
+    <div class="navbar bg-base-100 z-10">
         <div class="navbar-start">
             <div class="dropdown">
                 <label tabindex="0" class="btn btn-ghost btn-circle">
@@ -15,7 +15,7 @@
                         </NuxtLink>
                     </li>
                     <li>
-                        <NuxtLink to="/preview/1">
+                        <NuxtLink to="/preview">
                             Preview
                         </NuxtLink>
                     </li>
@@ -46,13 +46,18 @@
         </div>
         <ClientOnly>
             <div class="navbar-end">
-                <w3m-button />
+                <w3m-button balance="hide" />
             </div>
         </ClientOnly>
     </div>
 </template>
 
 <script setup lang="ts">
-
+import { getAccount } from '@wagmi/core'
+const userAddress = getAccount().address
+function goToPreviewPage() {
+    const addressLink = "/preview/" + userAddress
+    navigateTo(addressLink)
+}
 </script>
 
