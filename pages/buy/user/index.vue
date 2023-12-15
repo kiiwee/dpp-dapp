@@ -33,7 +33,7 @@
                     <h2> Deposit Wheel Back : {{ toIPFS.depositBackWheel }} wei</h2>
                     <h1>Deposit Total: {{ toIPFS.depositTotal }} wei</h1>
                     <h2 class="p-5"> Total: {{ toIPFS.totalCost }} wei</h2>
-                    <button :disabled="loaderShow" class="btn btn-lg btn-success" @click="pushToIPFS()">
+                    <button :disabled="loaderShow" class="btn btn-lg btn-success" @click="print()">
                         <span v-if="loaderShow" class="loading loading-spinner"></span>
 
                         Purchase
@@ -98,6 +98,10 @@ const models = ['Retro', 'Sporty', 'City']
 const colours = ['Red', 'Green', 'Blue', 'Brown']
 const cryptoStore = useCryptoStore()
 const { loaderPurchase } = storeToRefs(cryptoStore)
+const today = new Date();
+
+const todayDate = today.getDate() + '/' + (today.getMonth() + 1) + '/' + today.getFullYear();
+const todayTime = today.getHours() + ':' + today.getMinutes() + ':' + today.getSeconds();
 
 const toIPFS = {
     bikeCost: 1000,
@@ -109,6 +113,13 @@ const toIPFS = {
     colour: "",
     model: "",
     accountAddress: account,
+    posDateTime: {
+        datePOS: todayDate,
+        timePOS: todayTime
+    }
+}
+function print() {
+    console.log(toIPFS)
 }
 const loaderShow = ref(false)
 const steps = [
@@ -123,6 +134,14 @@ function goToOrderPage() {
 }
 async function pushToIPFS() {
     if (toIPFS.colour == "" && toIPFS.model == "") {
+        toast.add({
+            id: 'update_downloaded',
+            title: 'Please select model and colour',
+            icon: "i-heroicons-x-circle",
+            timeout: 5000,
+            color: "red"
+
+        })
         console.log("error")
         return
     }

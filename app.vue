@@ -1,7 +1,7 @@
 <template data-theme="light">
   <div>
 
-    <NavBar class=" fixed" />
+    <NavBar class=" fixed backdrop-blur-xl  	" />
     <div class="pt-20">
       <NuxtPage />
     </div>

@@ -7,26 +7,18 @@
         <div v-if="orderContents">
 
 
-
-            <div class="flex flex-row p-5 justify-center items-center">
-                <h1 class="text-xl">Order for address: {{ route.params.address }}</h1>
-            </div>
-            <div class="flex flex-row  justify-center items-center p-10">
-                <div class="card justify-center w-fit bg-base-100 shadow-xl ">
+            <div class="flex flex-row  justify-center items-center ">
+                <div class="card justify-center  bg-base-100 shadow-xl w-96 ">
                     <div class="card-body">
-                        <h1 class="card-title py-2">Order #{Order Number}</h1>
+                        <h1 class="card-title py-2 truncate">Order for {{ route.params.address }}</h1>
                         <h2>POS Date Time: 00:00:00 1/1/2024 ADD TO PROCESS</h2>
                         <div>
-                            <h2>Colour: </h2>
-                            <div class="ml-10">
-                                <h2>{{ orderContents.colour }}</h2>
-                            </div>
+                            <h2>Colour: {{ orderContents.colour }}</h2>
+
                         </div>
                         <div>
-                            <h2>Type: </h2>
-                            <div class="ml-10">
-                                <h2>{{ orderContents.model }}</h2>
-                            </div>
+                            <h2>Type: {{ orderContents.model }}</h2>
+
                         </div>
                         <div>
                             <h2>Bike Cost: {{ orderContents.bikeCost }} wei </h2>
@@ -45,10 +37,8 @@
                             </div>
                         </div>
                         <div>
-                            <h2>Total Cost : </h2>
-                            <div class="ml-10">
-                                <h2>{{ orderContents.totalCost }}</h2>
-                            </div>
+                            <h2>Total Cost: {{ orderContents.totalCost }}</h2>
+
                         </div>
                         <h2>Made From: </h2>
                         <div class="ml-10">
