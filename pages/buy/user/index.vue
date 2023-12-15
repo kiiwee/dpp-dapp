@@ -33,7 +33,7 @@
                     <h2> Deposit Wheel Back : {{ toIPFS.depositBackWheel }} wei</h2>
                     <h1>Deposit Total: {{ toIPFS.depositTotal }} wei</h1>
                     <h2 class="p-5"> Total: {{ toIPFS.totalCost }} wei</h2>
-                    <button :disabled="loaderShow" class="btn btn-lg btn-success" @click="print()">
+                    <button :disabled="loaderShow" class="btn btn-lg btn-success" @click="pushToIPFS()">
                         <span v-if="loaderShow" class="loading loading-spinner"></span>
 
                         Purchase
@@ -113,7 +113,7 @@ const toIPFS = {
     colour: "",
     model: "",
     accountAddress: account,
-    posDateTime: {
+    datetimePOS: {
         datePOS: todayDate,
         timePOS: todayTime
     }
