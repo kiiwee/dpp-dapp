@@ -7,7 +7,7 @@
 
             <div v-if="!purchase">
 
-                <div class=" items-center  justify-center flex-col flex  gap-1">
+                <div class=" items-center  justify-center flex-col flex w-96 gap-1">
                     <label class="form-control w-full max-w-xs">
                         <div class="label">
                             <span class="label-text">Choose Your Model</span>
@@ -33,7 +33,7 @@
                     <h2> Deposit Wheel Back : {{ toIPFS.depositBackWheel }} wei</h2>
                     <h1>Deposit Total: {{ toIPFS.depositTotal }} wei</h1>
                     <h2 class="p-5"> Total: {{ toIPFS.totalCost }} wei</h2>
-                    <button :disabled="loaderShow" class="btn btn-lg btn-success" @click="pushToIPFS()">
+                    <button :disabled="loaderShow" class="btn btn-lg hover:btn-success" @click="pushToIPFS()">
                         <span v-if="loaderShow" class="loading loading-spinner"></span>
 
                         Purchase
