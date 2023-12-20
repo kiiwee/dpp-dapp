@@ -6,9 +6,25 @@
       <NuxtPage />
     </div>
     <UNotifications />
+    <UModal v-model="isOpen">
+      <CommandPalette @to-page="isOpen = !isOpen"></CommandPalette>
+
+    </UModal>
+
   </div>
 </template>
-<script>
+<script setup>
 
+const isOpen = ref(false)
+
+defineShortcuts({
+  meta_k: {
+    usingInput: true,
+    handler: () => {
+      console.log(isOpen.value)
+      isOpen.value = !isOpen.value
+    }
+  }
+})
 
 </script>

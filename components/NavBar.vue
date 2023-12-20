@@ -45,7 +45,15 @@
             <!-- <h1 class="btn btn-ghost text-xl">DPP Control Centre</h1> -->
         </div>
         <ClientOnly>
-            <div class="navbar-end">
+            <div class="navbar-end ">
+                <div class="flex  items-center invisible lg:visible  gap-2 shadow-2xl">
+
+                    <div class="">
+                        <UKbd>⌘</UKbd>
+                        +
+                        <UKbd>K</UKbd>
+                    </div>
+                </div>
                 <w3m-button balance="hide" />
             </div>
         </ClientOnly>
