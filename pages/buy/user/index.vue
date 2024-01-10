@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-col p-5 justify-center items-center">
+    <div class="flex flex-col p-5 justify-center items-center pt-20">
         <div class="flex flex-row p-5 justify-center items-center pb-14">
             <h1 class="text-5xl">Purchase a Bike Page</h1>
         </div>
@@ -181,7 +181,7 @@ async function pushToIPFS() {
 
         })
     }
-    await setTimeout(() => { goToOrderPage() }, 10000); // 3 sec
+    await setTimeout(() => { goToOrderPage() }, 5000); // 5 sec
 
     loaderShow.value = !loaderShow.value
 

@@ -5,11 +5,11 @@
         </p> -->
 
         <qrcode-stream :paused="paused" @detect="onDetect" @error="onError" @camera-on="resetValidationState">
-            <div v-if="validationSuccess" class="validation-success">This is wallet does have a valid DPP</div>
+            <div v-if="validationSuccess" class="validation-success">Success, redirecting...</div>
 
-            <div v-if="validationFailure" class="validation-failure">This is NOT a ethereum address</div>
+            <div v-if="validationFailure" class="validation-failure">This is NOT a valid QR</div>
 
-            <div v-if="validationPending" class="validation-pending">Checking Wallet for DPP...</div>
+            <div v-if="validationPending" class="validation-pending">Checking Wallet...</div>
             <div v-if="noETH" class="validation-failure">Isnt Eth Address</div>
             <div v-if="routeETH" class="validation-success">Redirecting...</div>
             <div v-if="noPurchase" class="validation-failure">No order made</div>
@@ -25,7 +25,7 @@ import { QrcodeStream } from 'vue-qrcode-reader'
 
 export default {
 
-    props: ['header', 'checkdpp', 'moveToDest'],
+    props: ['header', 'checkdpp', 'moveToDest', 'recyclePage'],
     components: { QrcodeStream },
 
     data() {
@@ -36,7 +36,8 @@ export default {
             isValid: undefined,
             paused: false,
             result: null,
-            hasPurchase: undefined
+            hasPurchase: undefined,
+            waiting: undefined
         }
     },
 
@@ -51,7 +52,7 @@ export default {
             return this.isntETH === true
         },
         validationPending() {
-            return this.isValid === undefined && this.paused
+            return this.waiting === true && this.isValid === undefined
         },
 
         validationSuccess() {
@@ -72,9 +73,52 @@ export default {
 
         async onDetect([firstDetectedCode]) {
             this.result = firstDetectedCode.rawValue
-            const address = this.result.replace('ethereum:', '').split('@')[0]
+            console.log(this.result)
+
             this.$emit('result-scan', this.result)
-            if (!this.result.startsWith('ethereum:0x')) {
+            if (this.recyclePage) {
+
+                this.paused = true
+                this.waiting = true
+                // TODO: #2 Check for DPP
+                // pretend it's taking really long
+                if (!this.result.startsWith('tokenID: ')) {
+                    this.isValid = false
+                    this.paused = false
+                    this.waiting = false
+                    return;
+                }
+                const tokenid = this.result.replace('tokenID: ', '')
+                console.log(tokenid)
+
+                const { data } = await useFetch('/api/getToken/' + tokenid)
+                console.log(data.value)
+
+                if (data.nfts === null) {
+                    this.isValid = false
+                    this.paused = false
+                    this.waiting = false
+                    return;
+                }
+                else {
+                    this.isValid = true
+                    await this.timeout(3000)
+                    await navigateTo("/recycle/" + tokenid)
+                }
+                // this.isValid = this.result.startsWith('tokenID: ')
+                // await this.timeout(3000)
+                // await navigateTo("/recycle/" + string)
+
+
+                // some more delay, so users have time to read the message
+                await this.timeout(2000)
+                this.paused = false
+                this.waiting = false
+                return;
+            }
+            else if (!this.result.startsWith('ethereum:0x')) {
+                const address = this.result.replace('ethereum:', '').split('@')[0]
+
                 this.paused = true
                 this.isntETH = true
                 await this.timeout(3000)
@@ -84,6 +128,7 @@ export default {
                 return;
             }
             if (this.moveToDest) {
+                const address = this.result.replace('ethereum:', '').split('@')[0]
 
                 // TODO: #1 Check for Purchase
                 const { checkforPurchase } = useCryptoStore(this.$pinia)
@@ -99,6 +144,8 @@ export default {
                 return;
             }
             else if (this.checkdpp) {
+                const address = this.result.replace('ethereum:', '').split('@')[0]
+
                 this.paused = true
                 // TODO: #2 Check for DPP
                 // pretend it's taking really long
@@ -109,6 +156,7 @@ export default {
                 await this.timeout(2000)
                 this.paused = false
             }
+
         },
 
         timeout(ms) {

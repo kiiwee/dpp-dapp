@@ -14,16 +14,16 @@
     "@nuxt/ui": "latest",
     "@pinia/nuxt": "latest",
     "daisyui": "latest",
-    "nuxt": "^3.8.1",
+    "nuxt": "^3.9.1",
     "vue": "^3.3.8",
     "vue-router": "^4.2.5"
   },
   "dependencies": {
     "@popperjs/core": "^2.11.8",
+    "@vercel/kv": "^1.0.1",
     "@wagmi/core": "^1.4.10",
     "@web3modal/wagmi": "^3.4.0",
     "axios": "^1.6.2",
-    "ethers": "^5.7.2",
     "geist": "^1.2.0",
     "nft.storage": "^7.1.1",
     "qr-scanner-wechat": "^0.1.3",

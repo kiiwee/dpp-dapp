@@ -30,11 +30,11 @@
                         </NuxtLink>
                     </li>
                     <li>
-                        <NuxtLink to="/buy">
-                            Buy
+                        <NuxtLink to="/buy/user">
+                            Buy a bike
                         </NuxtLink>
                     </li>
-                    <li><a>About</a></li>
+
                 </ul>
             </div>
         </div>

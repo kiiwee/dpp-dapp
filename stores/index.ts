@@ -133,6 +133,7 @@ export const useCryptoStore = defineStore("user", () => {
                     "image": new File(["<DATA>"], "../public/favicon.ico", {
                         type: "image/ico",
                     }),
+                    "orderBy": account.address,
                     "quantity": 1,
                     "bikeCost": purchaseDetails.bikeCost,
                     "depositFrame": purchaseDetails.depositFrame,

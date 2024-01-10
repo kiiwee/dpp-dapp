@@ -1,11 +1,19 @@
 <template>
-    <div class="flex flex-row p-5 justify-center items-center">
+    <div class="flex flex-row p-5 justify-center items-center pt-20">
         <h1 class="text-5xl">DPP Preview Page</h1>
     </div>
     <ClientOnly>
+        <div>
+
+            <div v-if="nfts.totalCount == 0">
+                <div class="flex flex-row p-5 justify-center items-center">
+                    <h1 class="text-3xl text-slate-600">You do not own any DPPs</h1>
+                </div>
+            </div>
+        </div>
         <div class="flex items-center justify-center">
             <div class="grid lg:grid-cols-3  gap-5 p-10 sm:grid-row-1 ">
-                <div v-for="(nft, index) in nfts.ownedNfts">
+                <div v-for="( nft, index ) in  nfts.ownedNfts ">
 
                     <div class="card w-96 bg-base-100 shadow-xl">
                         <figure class="px-10 pt-10">
@@ -26,7 +34,7 @@
 </template>
 <script setup lang="ts">
 const { getNFTsByContract } = useCryptoStore()
-getNFTsByContract()
+await getNFTsByContract()
 const route = useRoute()
 const { nfts } = storeToRefs(useCryptoStore())
 const ownedNFTS = ref()

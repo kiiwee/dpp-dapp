@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="pt-20">
         <div class="flex flex-row p-5 justify-center items-center">
             <h1 class="text-6xl">DPP Authentication Page</h1>
 

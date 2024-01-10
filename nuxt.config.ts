@@ -11,7 +11,14 @@ export default defineNuxtConfig({
       enabled: true,
     },
   },
-
+  nitro: {
+    storage: {
+      data: {
+        driver: 'vercelKV'
+        /* Vercel KV driver options */
+      }
+    }
+  },
   modules: ["@nuxt/ui", "@pinia/nuxt",
     // "@vite-pwa/nuxt"
   ],

@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-row pb-2 justify-center items-center">
+    <div class="flex flex-row pb-2 justify-center items-center pt-20">
         <h1 class="text-5xl">DPP Distributer Order Page</h1>
     </div>
     <div v-if="orderContents">

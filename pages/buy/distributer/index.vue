@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-row p-5 justify-center items-center">
+    <div class="flex flex-row p-5 justify-center items-center pt-20">
         <h1 class="text-5xl">DPP Distributer Purchase Page</h1>
     </div>
     <div class="flex flex-col p-5 justify-center items-center">
