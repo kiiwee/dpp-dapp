@@ -12,7 +12,7 @@ export default defineNuxtConfig({
     },
   },
   nitro: {
-    preset: "vercel-edge",
+
     storage: {
       data: {
         driver: 'vercelKV'
