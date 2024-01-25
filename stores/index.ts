@@ -1,7 +1,7 @@
 // import { Alchemy, Network } from 'alchemy-sdk'
 import { acceptHMRUpdate, defineStore } from "pinia";
 // Setup: npm install alchemy-sdk
-const contractAddress = "0x170Dc614Ea5A2Df130763434aaB1BF1556D90cb5";
+const contractAddress = "0xF9bccaa53fB7F5c48d779B6d081d2ca47B3Ef210";
 import { NFTStorage, File, Blob } from "nft.storage";
 // The 'fs' builtin module on Node.js provides access to the file system
 import fs from "fs";
@@ -93,6 +93,128 @@ export const useCryptoStore = defineStore("user", () => {
                     abi: contractABI.abi,
                     functionName: 'approvePurchase',
                     args: [addressUser, metadata.url],
+                })
+
+                loaderPurchase.value = 2
+
+                const data = await waitForTransaction({
+                    hash: hash
+                })
+                loaderPurchase.value = 3
+
+                console.log('Transaction mined at: ')
+                console.log(data)
+                return data;
+            } else {
+                console.log("No Connected account and/or purchase already made");
+            }
+        } catch (error) {
+            loaderPurchase.value = 0
+            //setLoader(false)
+            console.log("Eroor");
+            console.log(error);
+        }
+    }
+    async function pushIPFS() {
+        console.log("setting loader");
+        //setLoader(true)
+        try {
+            const account = getAccount()
+            if (account) {
+                loaderPurchase.value = 0
+
+                const client = new NFTStorage({ token: NFT_STORAGE_TOKEN });
+                //TODO: #4 Fix get wallet address before trigger
+                const metadata = await client.store({
+                    "name": "Recycled Wheel",
+                    "description": "Recycled By 0x54Ba6afb89Bfa3701d07B044e1b638174eAd588E",
+                    "image": new File(["<DATA>"], "../public/favicon.ico", {
+                        type: "image/ico",
+                    }),
+                    "weight": "200 grams",
+                });
+
+                console.log("NFT data stored!");
+                console.log("Metadata URI WHEEL: ", metadata.url);
+                loaderPurchase.value = 1
+
+                const metadata2 = await client.store({
+                    "name": "Recycled Frame",
+                    "description": "Recycled By 0x54Ba6afb89Bfa3701d07B044e1b638174eAd588E",
+                    "image": new File(["<DATA>"], "../public/favicon.ico", {
+                        type: "image/ico",
+                    }),
+                    "weight": "200 grams",
+                });
+                console.log("NFT data stored!");
+                console.log("Metadata URI WHEEL: ", metadata.url);
+
+
+            } else {
+                console.log("No Connected account and/or purchase already made");
+            }
+        } catch (error) {
+            loaderPurchase.value = 0
+            //setLoader(false)
+            console.log("Eroor");
+            console.log(error);
+        }
+    }
+    async function Recycle(tokenID: number) {
+        console.log("setting loader");
+        //setLoader(true)
+        try {
+            const account = getAccount()
+            if (account) {
+                loaderPurchase.value = 0
+
+
+                const { hash } = await writeContract({
+                    address: contractAddress,
+                    abi: contractABI.abi,
+                    functionName: 'Recycle',
+                    args: [tokenID],
+                })
+
+                loaderPurchase.value = 2
+
+                const data = await waitForTransaction({
+                    hash: hash
+                })
+                loaderPurchase.value = 3
+
+                console.log('Transaction mined at: ')
+                console.log(data)
+                return data;
+            } else {
+                console.log("No Connected account and/or purchase already made");
+            }
+        } catch (error) {
+            loaderPurchase.value = 0
+            //setLoader(false)
+            console.log("Eroor");
+            console.log(error);
+        }
+    }
+    async function markForRecycle(tokenID: number) {
+        console.log("setting loader");
+        //setLoader(true)
+        try {
+            const account = getAccount()
+            if (account) {
+                loaderPurchase.value = 0
+
+                //TODO: #4 Fix get wallet address before trigger
+
+
+
+                loaderPurchase.value = 1
+
+                const { hash } = await writeContract({
+                    address: contractAddress,
+                    abi: contractABI.abi,
+                    functionName: 'markForRecycle',
+                    args: [tokenID],
                 })
 
                 loaderPurchase.value = 2
@@ -342,7 +464,7 @@ export const useCryptoStore = defineStore("user", () => {
         getOrderByUser,
         cancelPurchaseUser,
         cancelPurchaseDistributer,
-        approvePurchase, getNFTwithID,
+        approvePurchase, getNFTwithID, markForRecycle, Recycle,
         account,
         nfts,
         loading,

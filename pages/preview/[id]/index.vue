@@ -27,8 +27,8 @@
 
                         <h2>Deposit: </h2>
                         <div class="ml-10">
-                            <h2> Frame: {{ NFT.raw.metadata.deposit.depositBackWheel }}</h2>
-                            <h2> Wheels: {{ NFT.raw.metadata.deposit.depositFrame }}</h2>
+                            <h2> Frame: {{ NFT?.raw.metadata.deposit.depositBackWheel }}</h2>
+                            <h2> Wheels: {{ NFT?.raw.metadata.deposit.depositFrame }}</h2>
                             <h2> Total: {{ NFT.raw.metadata.deposit.depositTotal }}</h2>
                         </div>
                         <h1>IDs of Parts: </h1>
@@ -48,7 +48,10 @@
                                 </div>
                             </div>
                         </div>
-
+                        <div class="card-actions justify-center mt-10">
+                            <button @click="markForRecycle(NFT.tokenId)" class="btn ml-5 text-xl btn-error ">
+                                Mark For Recycling</button>
+                        </div>
                     </div>
                 </div>
 
@@ -57,7 +60,7 @@
     </ClientOnly>
 </template>
 <script setup lang="ts">
-const { getNFTsByContract, getNFTwithID } = useCryptoStore()
+const { getNFTsByContract, getNFTwithID, markForRecycle } = useCryptoStore()
 const route = useRoute()
 const NFT = ref()
 NFT.value = await getNFTwithID(route.params.id)

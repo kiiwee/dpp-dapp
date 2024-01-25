@@ -24,14 +24,14 @@
                         <h2 class="text-2xl font-bold text-center">Meet The Team</h2>
                         <div class="flex flex-col md:flex-row justify-center items-center gap-8 mt-8">
                             <div class="flex flex-col items-center">
-                                <img src="/public/Ilian.jpg" width="100" height="100" alt="Team Member 1"
-                                    class="rounded-full" style="aspect-ratio: 100 / 100; object-fit: cover;" />
+                                <img src="/Ilian.jpg" width="100" height="100" alt="Team Member 1" class="rounded-full"
+                                    style="aspect-ratio: 100 / 100; object-fit: cover;" />
                                 <h3 class="mt-4 text-lg font-semibold">Ilian Stoev</h3>
                                 <p class="mt-2 text-center text-gray-500">Wanted by Interpol</p>
                             </div>
                             <div class="flex flex-col items-center">
-                                <img src="/public/Ioan.jpg" width="100" height="100" alt="Team Member 2"
-                                    class="rounded-full" style="aspect-ratio: 100 / 100; object-fit: cover;" />
+                                <img src="/Ioan.jpg" width="100" height="100" alt="Team Member 2" class="rounded-full"
+                                    style="aspect-ratio: 100 / 100; object-fit: cover;" />
                                 <h3 class="mt-4 text-lg font-semibold">Ioan Popa</h3>
                                 <p class="mt-2 text-center text-gray-500">Wanted by the Vatican Police</p>
                             </div>
