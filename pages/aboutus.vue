@@ -12,9 +12,20 @@
                         </div>
                         <div class="flex flex-col items-start space-y-4">
                             <p class="mx-auto max-w-[700px] text-gray-500 md:text-xl dark:text-gray-400">
-                                Our project is dedicated to providing the best service in the industry. We have a team of
-                                professionals who are passionate about what they do and are committed to delivering
-                                excellence.
+                                Our collaborative effort materialized during the Smart Industry Advanced Specialization
+                                Semester, a dynamic period where we immersed ourselves in the convergence of technology and
+                                industry. Over three months, we delved into the intricacies of the project, combining our
+                                diverse skills and knowledge to create a solution that stands at the forefront of
+                                innovation.
+
+
+                            </p>
+                            <p class="mx-auto max-w-[700px] text-gray-500 md:text-xl dark:text-gray-400">
+                                As a team, we are driven by the vision of transforming industries through technology. Our
+                                journey is marked by dedication, collaboration, and the shared goal of pioneering a future
+                                where digital product passports redefine the landscape of product management. Join us as we
+                                navigate the intersection of technology and industry, forging new paths and redefining
+                                standards.
                             </p>
                         </div>
                     </div>
@@ -27,13 +38,35 @@
                                 <img src="/public/Ilian.jpg" width="100" height="100" alt="Team Member 1"
                                     class="rounded-full" style="aspect-ratio: 100 / 100; object-fit: cover;" />
                                 <h3 class="mt-4 text-lg font-semibold">Ilian Stoev</h3>
-                                <p class="mt-2 text-center text-gray-500">Wanted by Interpol</p>
+                                <div class="flex flex-col">
+                                    <p class="mt-2 text-center text-gray-700 pb-8 w-96"> Embedded Software, Data
+                                        Engineering, Supply Chain, Web Development
+
+
+                                    </p>
+                                    <p class="mt-2 text-center text-gray-500 w-96 pb-96">Tech enthusiast with a knack for
+                                        software,
+                                        automation, and supply chain dynamics. Ioan
+                                        plays a crucial role in the seamless integration of blockchain solutions into our
+                                        Digital Product Passport project.</p>
+                                </div>
                             </div>
                             <div class="flex flex-col items-center">
                                 <img src="/public/Ioan.jpg" width="100" height="100" alt="Team Member 2"
                                     class="rounded-full" style="aspect-ratio: 100 / 100; object-fit: cover;" />
                                 <h3 class="mt-4 text-lg font-semibold">Ioan Popa</h3>
-                                <p class="mt-2 text-center text-gray-500">Wanted by the Vatican Police</p>
+                                <div class="flex flex-col">
+                                    <p class="mt-2 text-center text-gray-700 pb-8"> Software Engineering, Automation,
+                                        Supply Chain
+
+
+                                    </p>
+                                    <p class="mt-2 text-center text-gray-500 w-96 pb-96">Tech enthusiast with a knack for
+                                        software,
+                                        automation, and supply chain dynamics. Ioan
+                                        plays a crucial role in the seamless integration of blockchain solutions into our
+                                        Digital Product Passport project.</p>
+                                </div>
                             </div>
                         </div>
                     </div>

@@ -12,14 +12,16 @@
                         </div>
                         <div class="flex flex-col items-start space-y-4">
                             <p class="mx-auto max-w-[700px] text-gray-500 md:text-xl dark:text-gray-400">
-                                Our project aims to provide a platform for users to share and discover new ideas. We believe
-                                in the
-                                power of community and the importance of sharing knowledge.
+                                Our project centers around the development and implementation of Digital Product Passports
+                                (DPP) leveraging cutting-edge blockchain technology. The aim is to revolutionize the way we
+                                authenticate and trace products throughout their lifecycle.
                             </p>
                             <p class="mx-auto max-w-[700px] text-gray-500 md:text-xl dark:text-gray-400">
-                                We are dedicated to creating a safe and inclusive environment where everyone can express
-                                their ideas
-                                freely. Our team is constantly working on improving the platform to better serve our users.
+                                Our focus is not just on solving existing problems but on paving the way for a future where
+                                trust and authenticity are paramount. Join us on this journey as we reshape the narrative of
+                                product management, bridging gaps, and ensuring a seamless, secure, and transparent
+                                ecosystem. Together, let's pioneer a future where products are more than just items – they
+                                are verifiable, trustworthy entities that speak for themselves.
                             </p>
                             <p class="mx-auto max-w-[700px] text-gray-500 md:text-xl dark:text-gray-400">
                                 Our project is open-source, and we welcome contributions from anyone interested in helping
@@ -45,21 +47,22 @@
                     <div
                         class="mx-auto grid items-start gap-8 sm:max-w-4xl sm:grid-cols-2 md:gap-12 lg:max-w-5xl lg:grid-cols-3">
                         <div class="grid gap-1">
-                            <h3 class="text-lg font-bold ">User Profiles</h3>
-                            <p class="text-sm text-gray-500  dark:text-gray-400">Create your own profile and share your
-                                ideas with the world.
+                            <h3 class="text-lg font-bold ">E-wallet/e-identity conmpatibility</h3>
+                            <p class="text-sm text-gray-500  dark:text-gray-400">Use your crypto wallet to purchase,
+                                maintain and recycle a physical bike
                             </p>
                         </div>
                         <div class="grid gap-1">
-                            <h3 class="text-lg font-bold ">Community Forums</h3>
+                            <h3 class="text-lg font-bold ">Custom DPP creation </h3>
                             <p class="text-sm text-gray-500  dark:text-gray-400">
-                                Join discussions on various topics and connect with like-minded individuals.
+                                The power to create a smart contract for your product and its dedicated features
                             </p>
                         </div>
                         <div class="grid gap-1">
-                            <h3 class="text-lg font-bold ">Collaborative Tools</h3>
+                            <h3 class="text-lg font-bold ">Smart Recycling
+                            </h3>
                             <p class="text-sm text-gray-500  dark:text-gray-400">
-                                Work together on projects and ideas using our built-in collaborative tools.
+                                Our system provides trustless deposit handling
                             </p>
                         </div>
                     </div>
