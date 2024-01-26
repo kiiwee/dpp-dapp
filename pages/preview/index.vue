@@ -14,11 +14,14 @@
         <div class="flex items-center justify-center">
             <div class="grid lg:grid-cols-3  gap-5 p-10 sm:grid-row-1 ">
                 <div v-for="( nft, index ) in  nfts.ownedNfts ">
+                    <div v-if="nft['tokenId'] < 3" class="card-body items-center text-center">
+                        <h2 v-if="nft['tokenId'] == 1" class="card-title">Wheels Recycled Material</h2>
+                        <h2 v-else-if="nft['tokenId'] == 2" class="card-title">Frame Recycled Material</h2>
+                        <p>Ammount: {{ nft!['balance'] }}</p>
 
-                    <div class="card w-96 bg-base-100 shadow-xl">
-                        <figure class="px-10 pt-10">
-                            {{ index }}
-                        </figure>
+                    </div>
+                    <div v-else-if="nft['tokenId'] > 2" class="card w-96 bg-base-100 shadow-xl">
+
                         <div class="card-body items-center text-center">
                             <h2 class="card-title">{{ nft!['raw']['metadata']['name'] }} #{{ nft!['tokenId'] }}</h2>
                             <p>Date Of Purchase: {{ nft!['raw']['metadata']['dateOfPurchase'] }}</p>

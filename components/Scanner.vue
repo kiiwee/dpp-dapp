@@ -5,9 +5,9 @@
         </p> -->
 
         <qrcode-stream :paused="paused" @detect="onDetect" @error="onError" @camera-on="resetValidationState">
-            <div v-if="validationSuccess" class="validation-success">Success, redirecting...</div>
+            <div v-if="validationSuccess" class="validation-success">Success</div>
 
-            <div v-if="validationFailure" class="validation-failure">This is NOT a valid QR</div>
+            <div v-if="validationFailure" class="validation-failure">This is NOT a valid QR or No DPP owned</div>
 
             <div v-if="validationPending" class="validation-pending">Checking Wallet...</div>
             <div v-if="noETH" class="validation-failure">Isnt Eth Address</div>
@@ -20,7 +20,10 @@
 </template>
 
 <script>
+const contractAddress = "0x09E89Ae68b9E5d1352d4540430E25aa7AFC916A7";
+
 import { QrcodeStream } from 'vue-qrcode-reader'
+import axios from "axios";
 
 
 export default {
@@ -135,18 +138,48 @@ export default {
 
                 this.hasPurchase = await checkforPurchase(address)
                 if (this.hasPurchase) {
-                    await this.timeout(200)
+                    this.isValid = true
+                    await this.timeout(2000)
                     await navigateTo("/buy/distributer/" + address)
                 }
-                await this.timeout(3000)
+                else {
+                    // this.isValid = false
+                    await this.timeout(2000)
 
+                }
+                this.isValid = undefined
                 this.hasPurchase = undefined
                 return;
             }
             else if (this.checkdpp) {
                 const address = this.result.replace('ethereum:', '').split('@')[0]
 
-                this.paused = true
+
+                const url = `https://eth-sepolia.g.alchemy.com/nft/v3/1e3k-TtozfGSz3WflkBQZQVauAp1WYFv/getNFTsForOwner?owner=${address}&contractAddresses[]=0x09E89Ae68b9E5d1352d4540430E25aa7AFC916A7&withMetadata=true&pageSize=1000`
+                const config = {
+                    method: "get",
+                    url: url,
+                };
+                const res = await axios(config).catch((error) => console.log("error", error));
+                console.log(res.data.ownedNfts)
+                if (res.data.ownedNfts.length > 0) {
+                    this.isValid = true
+                    await this.timeout(3000)
+                    this.isValid = undefined
+                    this.paused = false
+
+                    return;
+                }
+                else {
+                    this.isValid = false
+                    await this.timeout(3000)
+                    this.isValid = undefined
+
+                    this.paused = false
+                    return;
+
+                }
+
                 // TODO: #2 Check for DPP
                 // pretend it's taking really long
                 await this.timeout(3000)
@@ -154,6 +187,7 @@ export default {
 
                 // some more delay, so users have time to read the message
                 await this.timeout(2000)
+
                 this.paused = false
             }
 

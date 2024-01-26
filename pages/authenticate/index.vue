@@ -9,7 +9,7 @@
 
         </div>
         <div class="flex flex-row p-5 justify-center items-center ">
-            <Scanner class=" w-96" />
+            <Scanner :checkdpp="true" class=" w-96" />
         </div>
     </div>
 </template>

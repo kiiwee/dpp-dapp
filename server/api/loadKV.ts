@@ -27,7 +27,6 @@ async function reloadKV() {
 
 export default defineEventHandler(async (event) => {
     const dataStorage = useStorage('data');
-    await dataStorage.setItem('hello', 'world');
     const name = getRouterParam(event, 'name')
 
 
