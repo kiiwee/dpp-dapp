@@ -5,10 +5,10 @@
     <div class="flex flex-col p-5 justify-center items-center">
         <h1 class="text-4xl mb-10">Please Scan Your Wallet</h1>
         <Scanner moveToDest="true" @result-scan="getResult" class=" w-96" />
-        <div v-if="scannedResult">
+        <!-- <div v-if="scannedResult">
             Result: {{ scannedResult }}
 
-        </div>
+        </div> -->
 
     </div>
 </template>

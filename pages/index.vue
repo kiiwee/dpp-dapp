@@ -23,9 +23,9 @@ useSeoMeta({
 // v0 by Vercel.
 // https://v0.dev/t/0W13RkH
 -->
-  <section class="">
-    <div class="mx-auto max-w-screen-xl px-4  lg:flex lg:h-screen lg:items-center">
-      <div class="mx-auto max-w-xl text-center">
+  <section class=" ">
+    <div class="mx-auto max-w-screen-xl px-4  lg:flex lg:h-screen lg:items-center  pt-24">
+      <div class=" mx-auto max-w-xl text-center sm:pt-24">
         <h1 class="text-3xl font-extrabold sm:text-5xl">
           Digital Product Passport
           <strong class="font-extrabold text-red-700 sm:block">Own More. Think Less.</strong>

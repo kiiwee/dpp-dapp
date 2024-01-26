@@ -1,7 +1,8 @@
 // import { Alchemy, Network } from 'alchemy-sdk'
 import { acceptHMRUpdate, defineStore } from "pinia";
 // Setup: npm install alchemy-sdk
-const contractAddress = "0xF9bccaa53fB7F5c48d779B6d081d2ca47B3Ef210";
+// const contractAddress = "0xF9bccaa53fB7F5c48d779B6d081d2ca47B3Ef210";
+const contractAddress = "0x09E89Ae68b9E5d1352d4540430E25aa7AFC916A7";
 import { NFTStorage, File, Blob } from "nft.storage";
 // The 'fs' builtin module on Node.js provides access to the file system
 import fs from "fs";

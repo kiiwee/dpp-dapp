@@ -4,7 +4,7 @@
     </div>
     <ClientOnly>
         <div v-if="NFT.raw">
-            <div class="flex flex-row  justify-center items-center p-10">
+            <div class="flex flex-row  justify-center items-center pb-24">
 
                 <div class="card justify-center  bg-base-100 shadow-xl ">
                     <div class="card-body">
